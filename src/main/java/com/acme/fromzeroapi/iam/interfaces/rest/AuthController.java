@@ -43,18 +43,6 @@ public class AuthController {
         var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
         return new ResponseEntity<>(userResource, HttpStatus.CREATED);
     }
-    @Operation(summary = "Create Support")
-    @PostMapping("/register-support")
-    public ResponseEntity<UserResource> createSupport(@RequestBody SignUpSupportResource resource) {
-        var command = SupportCommandFromSignUpSupportResourceAssembler.toCommandFromResource(resource);
-        var user = userCommandService.handle(command);
-
-        if (user.isEmpty()){
-            return ResponseEntity.badRequest().build();
-        }
-        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
-        return new ResponseEntity<>(userResource, HttpStatus.CREATED);
-    }
     @Operation(summary = "sign in")
     @PostMapping("/sign-in")
     public ResponseEntity<AuthenticatedUserResource> signIn(@RequestBody SignInResource signInResource){
