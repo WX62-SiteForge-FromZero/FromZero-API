@@ -7,6 +7,8 @@ import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ProjectContextFacade {
     private final ProjectQueryService projectQueryService;
@@ -18,10 +20,8 @@ public class ProjectContextFacade {
         this.projectCommandService = projectCommandService;
     }
 
-    public Project getProjectById(Long id){
-        var getProjectByIdQuery = new GetProjectByIdQuery(id);
-        var project = this.projectQueryService.handle(getProjectByIdQuery);
-        return project.orElse(null);
+    public Optional<Project> getProjectById(Long projectId){
+        return projectQueryService.handle(new GetProjectByIdQuery(projectId));
     }
 
     public Project updateProjectProgress(Long projectId,Long completedDeliverables, Integer totalDeliverables){

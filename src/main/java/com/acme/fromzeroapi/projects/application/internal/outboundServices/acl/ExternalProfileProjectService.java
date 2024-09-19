@@ -5,19 +5,22 @@ import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
 import com.acme.fromzeroapi.profiles.interfaces.acl.ProfileContextFacade;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ExternalProfileProjectService {
+
     private final ProfileContextFacade profileContextFacade;
 
     public ExternalProfileProjectService(ProfileContextFacade profileContextFacade) {
         this.profileContextFacade = profileContextFacade;
     }
 
-    public Developer getDeveloperById(Long developerId){
+    public Optional<Developer> getDeveloperById(Long developerId){
         return profileContextFacade.getDeveloperById(developerId);
     }
 
-    public Company getCompanyById(Long companyId){
+    public Optional<Company> getCompanyById(Long companyId){
         return profileContextFacade.getCompanyById(companyId);
     }
 }

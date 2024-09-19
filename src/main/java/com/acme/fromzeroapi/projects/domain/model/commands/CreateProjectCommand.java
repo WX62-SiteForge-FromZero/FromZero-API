@@ -1,15 +1,20 @@
 package com.acme.fromzeroapi.projects.domain.model.commands;
 
-//import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Company;
-import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
-import com.acme.fromzeroapi.projects.domain.model.aggregates.Framework;
-import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.Frameworks;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProgrammingLanguages;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectType;
 
-import java.util.List;
+import java.util.Set;
 
 public record CreateProjectCommand(
-        String name, String description, Company company,
-        List<ProgrammingLanguage> languages, List<Framework> frameworks,String type,
-        String budget,String methodologies) {
+        String name,
+        String description,
+        Long companyId,
+        Set<ProgrammingLanguages> languages,
+        Set<Frameworks> frameworks,
+        ProjectType type,
+        String budget,
+        String methodologies
+) {
 
 }

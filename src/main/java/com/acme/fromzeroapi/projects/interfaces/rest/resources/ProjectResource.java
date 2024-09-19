@@ -1,27 +1,28 @@
 package com.acme.fromzeroapi.projects.interfaces.rest.resources;
 
+import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
-import com.acme.fromzeroapi.projects.domain.model.aggregates.Framework;
-import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.Frameworks;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProgrammingLanguages;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectState;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectType;
 
 import java.util.List;
+import java.util.Set;
 
 public record ProjectResource(
-        Long id, String name, String description, String state, Double progress,
-        Long ownerId, Long developerId, List<Developer> candidatesList,
-        List<ProgrammingLanguage> languages, List<Framework> frameworks,String type,
-        String budget,String methodologies) {
-    public ProjectResource{
-        if(id==null || name==null || description==null){
-            throw new NullPointerException("id is null");
-        }
-    }
-
-    public ProjectResource(Long id,String name, String description, String state,
-                           Double progress, Long ownerId,List<Developer> candidatesList,
-                           List<ProgrammingLanguage> languages, List<Framework> frameworks,
-                           String type,String budget,String methodologies){
-        this(id,name,description,state,progress,ownerId,null,candidatesList
-                ,languages,frameworks, type,budget,methodologies);
-    }
+        Long id,
+        String name,
+        String description,
+        ProjectState state,
+        Double progress,
+        Company company,
+        Developer developer,
+        Set<Developer> candidates,
+        Set<ProgrammingLanguages> languages,
+        Set<Frameworks> frameworks,
+        ProjectType type,
+        String budget,
+        String methodologies
+){
 }

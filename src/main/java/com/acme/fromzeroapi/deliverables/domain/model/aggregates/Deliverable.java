@@ -1,6 +1,7 @@
 package com.acme.fromzeroapi.deliverables.domain.model.aggregates;
 
 import com.acme.fromzeroapi.deliverables.domain.model.commands.CreateDeliverableCommand;
+import com.acme.fromzeroapi.deliverables.domain.model.valueObjects.DeliverableState;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,7 +20,6 @@ public class Deliverable {
     @Column(nullable = false)
     private String name;
 
-    @Lob
     @Column(nullable = false,columnDefinition = "TEXT")
     private String description;
 
@@ -27,25 +27,34 @@ public class Deliverable {
     private LocalDate date;
 
     @Setter
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String state;
+    private DeliverableState state;
 
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
 
     @Setter
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String developerMessage;
 
-    public Deliverable(CreateDeliverableCommand command) {
+    public Deliverable(CreateDeliverableCommand command, Project project) {
         this.name=command.name();
         this.description=command.description();
         this.date=command.date();
-        this.state="Pending";
+        this.state=DeliverableState.PENDIENTE;
         this.developerMessage=null;
-        this.project=command.project();
+        this.project=project;
+    }
+
+    public Deliverable(String name, String description, LocalDate date, Project project) {
+        this.name=name;
+        this.description=description;
+        this.date=date;
+        this.state=DeliverableState.PENDIENTE;
+        this.developerMessage=null;
+        this.project=project;
     }
 
     public Deliverable() {

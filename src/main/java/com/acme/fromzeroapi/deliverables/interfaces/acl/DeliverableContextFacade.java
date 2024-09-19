@@ -1,8 +1,10 @@
 package com.acme.fromzeroapi.deliverables.interfaces.acl;
 
+import com.acme.fromzeroapi.deliverables.domain.model.commands.CreateDefaultDeliverablesCommand;
 import com.acme.fromzeroapi.deliverables.domain.model.commands.CreateDeliverableCommand;
 import com.acme.fromzeroapi.deliverables.domain.services.DeliverableCommandService;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,29 +23,29 @@ public class DeliverableContextFacade {
     public void createDeliverables(Project project){
         if (project.getMethodologies().isBlank()) {
             LocalDate today = LocalDate.now();
-            List<CreateDeliverableCommand> deliverablesCommandList;
+            List<CreateDefaultDeliverablesCommand> deliverablesCommandList;
             switch (project.getType()){
-                case "Landing Page":
+                case ProjectType.LANDING_PAGE:
                     deliverablesCommandList= Arrays.asList(
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Definiendo requisitos del proyecto",
                                     """
                                             Se realizará una reunión para especificar quienes serán los usuarios y propósito principal
                                             """,
                                     today,project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Estructuras y contenidos del proyecto",
                                     """
                                             El desarrollador entrega Wireframes y Mockups del diseño del Landing Page, se incluye recursos visuales y multimedia que se utilizará. Se solicita un reporte detallando todo lo mencionado para que pase por supervisión.
                                             """,
                                     today.plusWeeks(1),project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Funcionalidad del código",
                                     """
                                             Entregar un informe donde el desarrollador detalle las tecnologías que se ha solicitado que use, asi como capturas de que la página sea completamente responsiva, y funcione en dispositivos móviles.
                                             """,
                                     today.plusWeeks(2),project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Pruebas y validación",
                                     """
                                             El desarrollador debe asegurar que hasta la fecha la pagina sea facil de usar y que las acciones dentro del Landing Page puedan ejecutarse sin problemas, además de compatibilidad y rendimiento.
@@ -53,27 +55,27 @@ public class DeliverableContextFacade {
                     this.deliverableCommandService.handle(deliverablesCommandList);
                     break;
 
-                case "Aplicacion web":
+                case ProjectType.WEB_APPLICATION:
                     deliverablesCommandList = Arrays.asList(
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Diseño de Interfaz de Usuario",
                                     """
                                     Crear mockups y prototipos de la interfaz de usuario de la aplicación web.
                                     """,
                                     today, project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Desarrollo Frontend",
                                     """
                                     Implementar la interfaz de usuario diseñada utilizando HTML, CSS y JavaScript.
                                     """,
                                     today.plusWeeks(2), project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Desarrollo Backend",
                                     """
                                     Implementar la lógica de negocio y la comunicación con el frontend en el backend de la aplicación.
                                     """,
                                     today.plusWeeks(4), project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Pruebas y Validación",
                                     """
                                     Realizar pruebas exhaustivas para garantizar que la aplicación funcione correctamente en diferentes navegadores y dispositivos.
@@ -83,27 +85,27 @@ public class DeliverableContextFacade {
                     this.deliverableCommandService.handle(deliverablesCommandList);
                     break;
 
-                case "Aplicacion de Escritorio":
+                case ProjectType.DESKTOP_APPLICATION:
                     deliverablesCommandList = Arrays.asList(
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Diseño de Interfaz de Usuario",
                                     """
                                     Diseñar la interfaz de usuario de la aplicación de escritorio teniendo en cuenta la experiencia del usuario.
                                     """,
                                     today, project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Implementación de Funcionalidades",
                                     """
                                     Implementar las diferentes funcionalidades de la aplicación de escritorio según los requisitos definidos.
                                     """,
                                     today.plusWeeks(2), project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Pruebas de Integración",
                                     """
                                     Realizar pruebas de integración para garantizar que todas las partes de la aplicación funcionen correctamente juntas.
                                     """,
                                     today.plusWeeks(4), project),
-                            new CreateDeliverableCommand(
+                            new CreateDefaultDeliverablesCommand(
                                     "Empaquetado y Distribución",
                                     """
                                     Preparar la aplicación para su distribución, incluyendo el empaquetado en un instalador y la creación de documentación.
@@ -111,6 +113,9 @@ public class DeliverableContextFacade {
                                     today.plusWeeks(6), project)
                     );
                     this.deliverableCommandService.handle(deliverablesCommandList);
+                    break;
+
+                case ProjectType.MOBILE_APPLICATION:
                     break;
             }
         }

@@ -37,12 +37,7 @@ public class Developer {
     @Setter
     private String profileImgUrl = "https://cdn-icons-png.flaticon.com/512/3237/3237472.png";
 
-    /*@OneToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;*/
-
     public Developer(
-            //User user,
             String firstName,
             String lastName,
             String description,
@@ -51,7 +46,6 @@ public class Developer {
             int completedProjects,
             String specialties,
             String profileImgUrl) {
-        //this.user = user;
         this.firstName = firstName;
         this.lastName = lastName;
         this.description = description;

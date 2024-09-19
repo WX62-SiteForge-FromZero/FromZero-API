@@ -46,7 +46,7 @@ public class DeliverableController {
     @Operation(summary = "Create deliverable")
     @PostMapping
     public ResponseEntity<DeliverableResource> createDeliverable(@RequestBody CreateDeliverableResource resource) {
-        var project = this.projectContextFacade.getProjectById(resource.projectId());
+        /*var project = this.projectContextFacade.getProjectById(resource.projectId());
         if (project == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -65,10 +65,17 @@ public class DeliverableController {
                 , completedDeliverables, totalDeliverables);
 
         var deliverableResource = DeliverableResourceFromEntityAssembler.toResourceFromEntity(deliverable.get());
-        return new  ResponseEntity<>(deliverableResource, HttpStatus.CREATED);
+        return new  ResponseEntity<>(deliverableResource, HttpStatus.CREATED);*/
+        var command = CreateDeliverableCommandFromResourceAssembler.toCommandFromResource(resource);
+        var deliverable = deliverableCommandService.handle(command);
+        if (deliverable.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+        var deliverableResource=DeliverableResourceFromEntityAssembler.toResourceFromEntity(deliverable.get());
+        return new ResponseEntity<>(deliverableResource,HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/project/{projectId}")
+    /*@GetMapping(value = "/project/{projectId}")
     @Operation(summary = "Get All Deliverables By Project Id")
     public ResponseEntity<List<DeliverableResource>> getAllDeliverablesByProjectId(@PathVariable Long projectId){
         var project = this.projectContextFacade.getProjectById(projectId);
@@ -79,7 +86,7 @@ public class DeliverableController {
                 .map(DeliverableResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(deliverablesResources);
-    }
+    }*/
 
     @GetMapping(value = "/{deliverableId}")
     @Operation(summary = "Get Deliverable By Id")

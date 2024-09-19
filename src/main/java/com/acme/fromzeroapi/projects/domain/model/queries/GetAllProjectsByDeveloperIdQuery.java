@@ -3,5 +3,5 @@ package com.acme.fromzeroapi.projects.domain.model.queries;
 //import com.acme.fromzeroapi.developer_branch_projects.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
 
-public record GetAllProjectsByDeveloperIdQuery(Developer developer) {
+public record GetAllProjectsByDeveloperIdQuery(Long developerId) {
 }
