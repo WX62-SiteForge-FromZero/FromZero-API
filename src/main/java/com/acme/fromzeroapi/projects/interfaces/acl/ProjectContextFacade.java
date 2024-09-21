@@ -12,30 +12,13 @@ import java.util.Optional;
 @Service
 public class ProjectContextFacade {
     private final ProjectQueryService projectQueryService;
-    private final ProjectCommandService projectCommandService;
 
-    public ProjectContextFacade(ProjectQueryService projectQueryService,
-                                ProjectCommandService projectCommandService) {
+    public ProjectContextFacade(ProjectQueryService projectQueryService) {
         this.projectQueryService = projectQueryService;
-        this.projectCommandService = projectCommandService;
     }
 
     public Optional<Project> getProjectById(Long projectId){
         return projectQueryService.handle(new GetProjectByIdQuery(projectId));
     }
 
-    public Project updateProjectProgress(Long projectId,Long completedDeliverables, Integer totalDeliverables){
-        double percentComplete = (double) completedDeliverables / totalDeliverables * 100;
-        var getProjectByIdQuery = new GetProjectByIdQuery(projectId);
-        try {
-            var project = this.projectQueryService.handle(getProjectByIdQuery);
-            if(project.isEmpty())throw new IllegalArgumentException();
-            var updateProjectProgress = new UpdateProjectProgressCommand(project.get(),percentComplete);
-            var updatedProject = this.projectCommandService.handle(updateProjectProgress);
-            if(updatedProject.isEmpty()) throw new IllegalArgumentException();
-            return updatedProject.get();
-        }catch (IllegalArgumentException e){
-            return null;
-        }
-    }
 }

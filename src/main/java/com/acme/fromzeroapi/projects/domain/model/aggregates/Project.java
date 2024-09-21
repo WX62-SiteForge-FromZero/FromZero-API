@@ -3,10 +3,12 @@ package com.acme.fromzeroapi.projects.domain.model.aggregates;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
+import com.acme.fromzeroapi.projects.domain.model.events.CreateDefaultDeliverablesEvent;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.Frameworks;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProgrammingLanguages;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectState;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectType;
+import com.acme.fromzeroapi.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,11 +18,11 @@ import java.util.Set;
 
 @Getter
 @Entity
-public class Project {
+public class Project extends AuditableAbstractAggregateRoot<Project> {
 
-    @Id
+    /*@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;*/
 
     @Column(nullable = false)
     private String name;
@@ -96,5 +98,12 @@ public class Project {
 
     }
 
+    public void createDefaultDeliverables(Long projectId,ProjectType type){
+        this.registerEvent(new CreateDefaultDeliverablesEvent(this,projectId,type));
+    }
+
+    public void sendToHighlightProject() {
+        // evento
+    }
 
 }

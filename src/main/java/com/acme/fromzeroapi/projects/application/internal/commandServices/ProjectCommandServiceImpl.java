@@ -1,12 +1,8 @@
 package com.acme.fromzeroapi.projects.application.internal.commandServices;
 
-import com.acme.fromzeroapi.projects.application.internal.outboundServices.acl.ExternalDeliverableService;
 import com.acme.fromzeroapi.projects.application.internal.outboundServices.acl.ExternalProfileProjectService;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
-import com.acme.fromzeroapi.projects.domain.model.commands.AssignProjectDeveloperCommand;
-import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
-import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectCandidatesListCommand;
-import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectProgressCommand;
+import com.acme.fromzeroapi.projects.domain.model.commands.*;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectState;
 import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.infrastructure.persistence.jpa.repositories.ProjectRepository;
@@ -19,16 +15,24 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
     private final ProjectRepository projectRepository;
     private final ExternalProfileProjectService externalProfileProjectService;
-    private final ExternalDeliverableService externalDeliverableService;
 
     public ProjectCommandServiceImpl(
             ProjectRepository projectRepository,
-            ExternalProfileProjectService externalProfileProjectService,
-            ExternalDeliverableService externalDeliverableService ) {
+            ExternalProfileProjectService externalProfileProjectService) {
 
         this.projectRepository = projectRepository;
         this.externalProfileProjectService = externalProfileProjectService;
-        this.externalDeliverableService = externalDeliverableService;
+    }
+
+    public void createDefaultDeliverables(Long projectId) {
+        var project = projectRepository.findById(projectId);
+        if (project.isEmpty()) {
+            return;
+        }
+        if (project.get().getMethodologies().isBlank()) {
+            project.get().createDefaultDeliverables(project.get().getId(), project.get().getType());
+        }
+        projectRepository.save(project.get());
     }
 
     @Override
@@ -44,7 +48,7 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
             this.projectRepository.save(project);
 
-            this.externalDeliverableService.createDeliverables(project);
+            this.createDefaultDeliverables(project.getId());
 
             return Optional.of(project);
         }catch (Exception e) {
@@ -92,10 +96,23 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
     }
 
     @Override
-    public Optional<Project> handle(UpdateProjectProgressCommand command) {
-        var project = command.project();
-        project.setProgress(command.progress());
-        this.projectRepository.save(project);
-        return Optional.of(project);
+    public void handle(UpdateProjectProgressCommand command) {
+
+        var project = projectRepository.findById(command.projectId());
+        if (project.isEmpty()) {
+            return;
+        }
+        double percentComplete = (double) command.completedDeliverables() / command.totalDeliverables() * 100;
+        project.get().setProgress(percentComplete);
+
+        if (project.get().getProgress()==100.0){
+            project.get().setState(ProjectState.COMPLETADO);
+        }
+
+        this.projectRepository.save(project.get());
+
+        /*if (project.get().getProgress()==100.0){
+            project.get().sendToHighlightProject();
+        }*/
     }
 }
