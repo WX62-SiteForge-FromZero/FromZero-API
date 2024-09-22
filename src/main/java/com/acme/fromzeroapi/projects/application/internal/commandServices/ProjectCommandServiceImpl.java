@@ -6,6 +6,7 @@ import com.acme.fromzeroapi.projects.domain.model.commands.*;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectState;
 import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.infrastructure.persistence.jpa.repositories.ProjectRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,23 +17,16 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
     private final ProjectRepository projectRepository;
     private final ExternalProfileProjectService externalProfileProjectService;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public ProjectCommandServiceImpl(
             ProjectRepository projectRepository,
-            ExternalProfileProjectService externalProfileProjectService) {
+            ExternalProfileProjectService externalProfileProjectService,
+            ApplicationEventPublisher eventPublisher) {
 
         this.projectRepository = projectRepository;
         this.externalProfileProjectService = externalProfileProjectService;
-    }
-
-    public void createDefaultDeliverables(Long projectId) {
-        var project = projectRepository.findById(projectId);
-        if (project.isEmpty()) {
-            return;
-        }
-        if (project.get().getMethodologies().isBlank()) {
-            project.get().createDefaultDeliverables(project.get().getId(), project.get().getType());
-        }
-        projectRepository.save(project.get());
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -48,7 +42,12 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
             this.projectRepository.save(project);
 
-            this.createDefaultDeliverables(project.getId());
+            if (project.getMethodologies().isBlank()) {
+                project.createDefaultDeliverables(project.getId(), project.getType());
+            }
+
+            project.getDomainEvents().forEach(eventPublisher::publishEvent);
+
 
             return Optional.of(project);
         }catch (Exception e) {
@@ -63,6 +62,11 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
         if (project.isEmpty()) {
             return Optional.empty();
         }
+
+        if (project.get().getDeveloper()!=null){
+            return Optional.empty();
+        }
+
         var developer = externalProfileProjectService.getDeveloperById(command.developerId());
         if (developer.isEmpty()) {
             return Optional.empty();
@@ -84,6 +88,11 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
         var developer = externalProfileProjectService.getDeveloperById(command.developerId());
         if (developer.isEmpty()) {
+            return Optional.empty();
+        }
+
+
+        if(!project.get().getCandidates().contains(developer.get())){
             return Optional.empty();
         }
 

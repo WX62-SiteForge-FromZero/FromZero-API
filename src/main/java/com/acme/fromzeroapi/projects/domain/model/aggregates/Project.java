@@ -13,16 +13,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Entity
 public class Project extends AuditableAbstractAggregateRoot<Project> {
-
-    /*@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;*/
 
     @Column(nullable = false)
     private String name;
@@ -100,6 +97,15 @@ public class Project extends AuditableAbstractAggregateRoot<Project> {
 
     public void createDefaultDeliverables(Long projectId,ProjectType type){
         this.registerEvent(new CreateDefaultDeliverablesEvent(this,projectId,type));
+    }
+
+    @Override
+    protected Collection<Object> domainEvents() {
+        return super.domainEvents();
+    }
+
+    public Collection<Object> getDomainEvents(){
+        return this.domainEvents();
     }
 
     public void sendToHighlightProject() {

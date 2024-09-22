@@ -1,7 +1,6 @@
 package com.acme.fromzeroapi.projects.domain.model.entities;
 
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateDeliverableCommand;
-import com.acme.fromzeroapi.projects.domain.model.events.DeliverableCompletedEvent;
 import com.acme.fromzeroapi.projects.domain.model.events.UpdateProjectProgressEvent;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.DeliverableState;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
@@ -11,14 +10,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 @Getter
 @Entity
 public class Deliverable extends AuditableAbstractAggregateRoot<Deliverable> {
-
-    /*@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;*/
 
     @Column(nullable = false)
     private String name;
@@ -62,6 +58,15 @@ public class Deliverable extends AuditableAbstractAggregateRoot<Deliverable> {
 
     public Deliverable() {
 
+    }
+
+    @Override
+    protected Collection<Object> domainEvents() {
+        return super.domainEvents();
+    }
+
+    public Collection<Object> getDomainEvents(){
+        return domainEvents();
     }
 
     public void updateProjectProgress(Long projectId, Long completedDeliverables, Integer totalDeliverables){

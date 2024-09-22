@@ -1,6 +1,5 @@
 package com.acme.fromzeroapi.profiles.domain.model.aggregates;
 
-import com.acme.fromzeroapi.iam.domain.model.aggregates.User;
 import com.acme.fromzeroapi.profiles.domain.model.commands.CreateDeveloperProfileCommand;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -70,5 +69,18 @@ public class Developer {
 
     public Developer() {
 
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Developer)) return false;
+        Developer developer = (Developer) obj;
+        return id != null && id.equals(developer.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
