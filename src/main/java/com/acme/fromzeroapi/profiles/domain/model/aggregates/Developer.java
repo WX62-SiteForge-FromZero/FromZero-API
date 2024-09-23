@@ -84,8 +84,7 @@ public class Developer extends AuditableAbstractAggregateRoot<Developer> {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Developer)) return false;
-        Developer developer = (Developer) obj;
+        if (!(obj instanceof Developer developer)) return false;
         return getId() != null && getId().equals(developer.getId());
     }
 
