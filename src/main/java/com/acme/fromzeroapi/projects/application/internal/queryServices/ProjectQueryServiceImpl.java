@@ -1,5 +1,6 @@
 package com.acme.fromzeroapi.projects.application.internal.queryServices;
 
+import com.acme.fromzeroapi.projects.application.internal.outboundServices.acl.ExternalProfileProjectService;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 import com.acme.fromzeroapi.projects.domain.model.queries.*;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
@@ -12,8 +13,12 @@ import java.util.Optional;
 @Service
 public class ProjectQueryServiceImpl implements ProjectQueryService {
     private final ProjectRepository projectRepository;
-    public ProjectQueryServiceImpl(ProjectRepository projectRepository) {
+    private final ExternalProfileProjectService externalProfileProjectService;
+    public ProjectQueryServiceImpl(
+            ProjectRepository projectRepository,
+            ExternalProfileProjectService externalProfileProjectService ) {
         this.projectRepository = projectRepository;
+        this.externalProfileProjectService = externalProfileProjectService;
     }
 
     @Override
@@ -33,11 +38,19 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
 
     @Override
     public List<Project> handle(GetAllProjectsByDeveloperIdQuery query) {
-        return this.projectRepository.findAllByDeveloper(query.developer());
+        var developer = externalProfileProjectService.getDeveloperById(query.developerId());
+        if (developer.isEmpty()){
+            return List.of();
+        }
+        return this.projectRepository.findAllByDeveloper(developer.get());
     }
 
     @Override
     public List<Project> handle(GetAllProjectsByCompanyIdQuery query) {
-        return this.projectRepository.findAllByCompany(query.company());
+        var company = externalProfileProjectService.getCompanyById(query.companyId());
+        if (company.isEmpty()){
+            return List.of();
+        }
+        return this.projectRepository.findAllByCompany(company.get());
     }
 }

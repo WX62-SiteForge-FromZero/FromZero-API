@@ -12,6 +12,8 @@ import com.acme.fromzeroapi.profiles.domain.services.ProfileQueryService;
 //import com.acme.fromzeroapi.developer_branch_projects.domain.model.queries.GetDeveloperByIdQuery;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ProfileContextFacade {
     private final ProfileQueryService profileQueryService;
@@ -77,16 +79,12 @@ public class ProfileContextFacade {
         profileCommandService.handle(command);
     }
 
-    public Developer getDeveloperById(Long id){
-        var query = new GetDeveloperByIdQuery(id);
-        var developer = profileQueryService.handle(query);
-        return developer.orElse(null);
+    public Optional<Developer> getDeveloperById(Long id){
+        return profileQueryService.handle(new GetDeveloperByIdQuery(id));
     }
 
-    public Company getCompanyById(Long id){
-        var query = new GetCompanyByIdQuery(id);
-        var company = profileQueryService.handle(query);
-        return company.orElse(null);
+    public Optional<Company> getCompanyById(Long id){
+        return profileQueryService.handle(new GetCompanyByIdQuery(id));
     }
 
     public void updateDeveloperCompletedProjects(Long developerId){

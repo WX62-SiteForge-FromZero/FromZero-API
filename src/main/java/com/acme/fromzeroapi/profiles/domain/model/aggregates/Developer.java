@@ -1,6 +1,5 @@
 package com.acme.fromzeroapi.profiles.domain.model.aggregates;
 
-import com.acme.fromzeroapi.iam.domain.model.aggregates.User;
 import com.acme.fromzeroapi.profiles.domain.model.commands.CreateDeveloperProfileCommand;
 import com.acme.fromzeroapi.profiles.domain.model.valueobjects.ProfileId;
 import com.acme.fromzeroapi.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -41,12 +40,7 @@ public class Developer extends AuditableAbstractAggregateRoot<Developer> {
 
     private Long userId;
 
-    /*@OneToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;*/
-
     public Developer(
-            //User user,
             String firstName,
             String lastName,
             String description,
@@ -86,6 +80,20 @@ public class Developer extends AuditableAbstractAggregateRoot<Developer> {
     public Developer() {
         this.profileId = new ProfileId();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Developer)) return false;
+        Developer developer = (Developer) obj;
+        return getId() != null && getId().equals(developer.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
+
 
     public String getProfileId() {
         return this.profileId.RecordId();

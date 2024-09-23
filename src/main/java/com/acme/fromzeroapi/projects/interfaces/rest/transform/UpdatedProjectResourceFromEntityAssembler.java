@@ -5,6 +5,9 @@ import com.acme.fromzeroapi.projects.interfaces.rest.resources.UpdateProjectCand
 
 public class UpdatedProjectResourceFromEntityAssembler {
     public static UpdateProjectCandidatesListResource toResourceFromEntity(Project entity){
-        return new UpdateProjectCandidatesListResource(entity.getName(),entity.getDescription(),entity.getCandidates());
+        return new UpdateProjectCandidatesListResource(
+                entity.getName(),
+                entity.getCandidates()
+        );
     }
 }

@@ -3,31 +3,33 @@ package com.acme.fromzeroapi.projects.domain.model.aggregates;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.acme.fromzeroapi.projects.domain.model.events.CreateDefaultDeliverablesEvent;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.Frameworks;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProgrammingLanguages;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectState;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectType;
+import com.acme.fromzeroapi.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Entity
-public class Project {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Project extends AuditableAbstractAggregateRoot<Project> {
 
     @Column(nullable = false)
     private String name;
 
-    @Lob
-    @Column(columnDefinition = "TEXT",nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
     @Setter
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private ProjectState state;
 
     @Setter
     private Double progress;
@@ -41,63 +43,73 @@ public class Project {
     @JoinColumn(name = "developer_id")
     private Developer developer;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "project_candidates",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
-    @JsonManagedReference
-    private List<Developer> candidates;
+    private Set<Developer> candidates = new HashSet<>();
 
-    //many to many relationship
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "project_programming_languages",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "programming_language_id")
-    )
-    @JsonManagedReference
-    private List<ProgrammingLanguage> languages;
-
-    //many to many relationship
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
+    @ElementCollection(targetClass = Frameworks.class, fetch = FetchType.EAGER)
+    @CollectionTable(
             name = "project_frameworks",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "framework_id")
+            joinColumns = @JoinColumn(name = "project_id")
     )
-    @JsonManagedReference
-    private List<Framework> frameworks;
+    @Enumerated(EnumType.STRING)
+    private Set<Frameworks> frameworks = new HashSet<>();
 
-    private String type;
+    @ElementCollection(targetClass = ProgrammingLanguages.class, fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "project_programming_languages",
+            joinColumns = @JoinColumn(name = "project_id")
+    )
+    @Enumerated(EnumType.STRING)
+    private Set<ProgrammingLanguages> languages = new HashSet<>();
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProjectType type;
+
+    @Column(columnDefinition = "TEXT",nullable = false)
     private String budget;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String methodologies;
 
-    public Project(CreateProjectCommand command){
-        this.name=command.name();
-        this.description=command.description();
-        this.state="En busqueda";
-        this.progress=0.0;
-        this.company =command.company();
-        this.developer=null;
-        this.languages=new ArrayList<>();
-        this.frameworks=new ArrayList<>();
-        this.type=command.type();
-        this.budget=command.budget();
-        this.methodologies=command.methodologies();
+    public Project(CreateProjectCommand command, Company company) {
+        this.name = command.name();
+        this.description = command.description();
+        this.state = ProjectState.EN_BUSQUEDA;
+        this.progress = 0.0;
+        this.company = company;
+        this.frameworks = command.frameworks();
+        this.languages = command.languages();
+        this.developer = null;
+        this.type = command.type();
+        this.budget = command.budget();
+        this.methodologies = command.methodologies();
+    }
+
+    public Project() {
 
     }
 
-    public Project(){
-
+    public void createDefaultDeliverables(Long projectId,ProjectType type){
+        this.registerEvent(new CreateDefaultDeliverablesEvent(this,projectId,type));
     }
 
+    @Override
+    protected Collection<Object> domainEvents() {
+        return super.domainEvents();
+    }
+
+    public Collection<Object> getDomainEvents(){
+        return this.domainEvents();
+    }
+
+    public void sendToHighlightProject() {
+        // evento
+    }
 
 }
