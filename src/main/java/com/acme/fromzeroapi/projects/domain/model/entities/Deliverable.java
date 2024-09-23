@@ -47,15 +47,6 @@ public class Deliverable extends AuditableAbstractAggregateRoot<Deliverable> {
         this.project=project;
     }
 
-    public Deliverable(String name, String description, LocalDate date, Project project) {
-        this.name=name;
-        this.description=description;
-        this.date=date;
-        this.state=DeliverableState.PENDIENTE;
-        this.developerMessage=null;
-        this.project=project;
-    }
-
     public Deliverable() {
 
     }
