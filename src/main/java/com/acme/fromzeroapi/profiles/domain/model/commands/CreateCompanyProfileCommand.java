@@ -9,6 +9,7 @@ public record CreateCompanyProfileCommand(
         String phone,
         String website,
         String profileImgUrl,
-        String sector
+        String sector,
+        Long userId
 ) {
 }

@@ -1,13 +1,8 @@
 package com.acme.fromzeroapi.iam.domain.model.commands;
 
 public record SignUpSupportCommand(
-        CreateUserCommand createUserCommand
+        String email,
+        String password,
+        String role
 ) {
-        public SignUpSupportCommand(String mail, String password) {
-                this(new CreateUserCommand(mail, password, "S"));
-        }
-
-        public boolean isOfType(Class<?> type) {
-                return type.isInstance(createUserCommand);
-        }
 }

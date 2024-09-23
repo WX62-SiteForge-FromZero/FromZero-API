@@ -10,6 +10,7 @@ public record CompanyProfileResource(
         String phone,
         String website,
         String profileImgUrl,
-        String sector
+        String sector,
+        Long userId
 ) {
 }

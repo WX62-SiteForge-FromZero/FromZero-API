@@ -5,6 +5,6 @@ import com.acme.fromzeroapi.iam.interfaces.rest.resources.AuthenticatedUserResou
 
 public class AuthenticatedUsedResourcerFromEntityAssembler {
     public static AuthenticatedUserResource toResourceFromEntity(User user, String token) {
-        return new AuthenticatedUserResource(user.getEmail(),user.getUserType(),token);
+        return new AuthenticatedUserResource(user.getId(),user.getEmail(),token);
     }
 }

@@ -9,6 +9,7 @@ public record CreateDeveloperProfileCommand(
         String phone,
         int completedProjects,
         String specialties,
-        String profileImgUrl
+        String profileImgUrl,
+        Long userId
 ) {
 }

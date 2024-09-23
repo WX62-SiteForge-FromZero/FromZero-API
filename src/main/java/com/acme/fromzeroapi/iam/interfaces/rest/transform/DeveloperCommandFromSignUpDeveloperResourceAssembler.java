@@ -5,6 +5,11 @@ import com.acme.fromzeroapi.iam.interfaces.rest.resources.SignUpDeveloperResourc
 
 public class DeveloperCommandFromSignUpDeveloperResourceAssembler {
     public static SignUpDeveloperCommand toCommandFromResource(SignUpDeveloperResource signUpDeveloperResource) {
-        return new SignUpDeveloperCommand(signUpDeveloperResource.email(), signUpDeveloperResource.password(), signUpDeveloperResource.firstName(), signUpDeveloperResource.lastName());
+        return new SignUpDeveloperCommand(
+                signUpDeveloperResource.email(),
+                signUpDeveloperResource.password(),
+                signUpDeveloperResource.firstName(),
+                signUpDeveloperResource.lastName()
+        );
     }
 }

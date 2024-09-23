@@ -10,6 +10,7 @@ public record DeveloperProfileResource(
         String phone,
         Integer completedProjects,
         String specialties,
-        String profileImgUrl
+        String profileImgUrl,
+        Long userId
 ) {
 }

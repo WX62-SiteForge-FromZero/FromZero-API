@@ -15,7 +15,8 @@ public class CompanyProfileResourceFromEntityAssembler {
                 entity.getPhone(),
                 entity.getWebsite(),
                 entity.getProfileImgUrl(),
-                entity.getSector()
+                entity.getSector(),
+                entity.getUserId()
         );
     }
 }

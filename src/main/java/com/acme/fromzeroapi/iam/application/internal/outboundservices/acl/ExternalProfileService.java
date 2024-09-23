@@ -11,7 +11,7 @@ public class ExternalProfileService {
         this.profileContextFacade = profileContextFacade;
     }
 
-    public void createDeveloperProfile(String firstName, String lastName, String email){
+    public void createDeveloperProfile(String firstName, String lastName, String email, Long userId){
         profileContextFacade.createDeveloperProfile(
                 firstName,
                 lastName,
@@ -21,11 +21,12 @@ public class ExternalProfileService {
                 "No phone provided.",
                 0,
                 "No specialties provided.",
-                "https://cdn-icons-png.flaticon.com/512/3237/3237472.png"
+                "https://cdn-icons-png.flaticon.com/512/3237/3237472.png",
+                userId
         );
     }
 
-    public void createCompanyProfile(String companyName,String email){
+    public void createCompanyProfile(String companyName,String email, Long userId){
         profileContextFacade.createCompanyProfile(
                 companyName,
                 email,
@@ -35,7 +36,8 @@ public class ExternalProfileService {
                 "999 999 999",
                 "No website provided.",
                 "https://cdn-icons-png.flaticon.com/512/3237/3237472.png",
-                "No sector provided."
+                "No sector provided.",
+                userId
         );
     }
 }

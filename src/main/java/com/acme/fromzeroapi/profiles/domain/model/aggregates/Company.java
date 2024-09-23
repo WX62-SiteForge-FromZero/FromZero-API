@@ -19,6 +19,8 @@ public class Company {
 
     private String email;
 
+    private Long userId;
+
     @Setter
     private String description = "No description provided.";
     @Setter
@@ -47,7 +49,9 @@ public class Company {
             String phone,
             String website,
             String profileImgUrl,
-            String sector) {
+            String sector,
+            long userId
+    ) {
         //this.user = user;
         this.companyName = companyName;
         this.description = description;
@@ -57,6 +61,7 @@ public class Company {
         this.website = website;
         this.profileImgUrl = profileImgUrl;
         this.sector = sector;
+        this.userId = userId;
     }
 
     public Company(CreateCompanyProfileCommand command){
@@ -69,6 +74,7 @@ public class Company {
         this.website=command.website();
         this.profileImgUrl=command.profileImgUrl();
         this.sector=command.sector();
+        this.userId=command.userId();
     }
 
     public Company() {

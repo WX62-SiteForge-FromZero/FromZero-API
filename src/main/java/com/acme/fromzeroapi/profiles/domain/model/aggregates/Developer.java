@@ -37,6 +37,8 @@ public class Developer {
     @Setter
     private String profileImgUrl = "https://cdn-icons-png.flaticon.com/512/3237/3237472.png";
 
+    private Long userId;
+
     /*@OneToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;*/
@@ -50,7 +52,9 @@ public class Developer {
             String phone,
             int completedProjects,
             String specialties,
-            String profileImgUrl) {
+            String profileImgUrl,
+            Long userId
+            ) {
         //this.user = user;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -60,6 +64,7 @@ public class Developer {
         this.completedProjects = completedProjects;
         this.specialties = specialties;
         this.profileImgUrl = profileImgUrl;
+        this.userId = userId;
     }
 
     public Developer(CreateDeveloperProfileCommand command){
@@ -72,6 +77,7 @@ public class Developer {
         this.completedProjects=command.completedProjects();
         this.specialties=command.specialties();
         this.profileImgUrl=command.profileImgUrl();
+        this.userId=command.userId();
     }
 
     public Developer() {

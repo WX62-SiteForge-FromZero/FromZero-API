@@ -32,7 +32,8 @@ public class ProfileContextFacade {
             String phone,
             int completedProjects,
             String specialties,
-            String profileImgUrl
+            String profileImgUrl,
+            Long userId
     ){
         var command = new CreateDeveloperProfileCommand(
                 firstName,
@@ -43,7 +44,8 @@ public class ProfileContextFacade {
                 phone,
                 completedProjects,
                 specialties,
-                profileImgUrl
+                profileImgUrl,
+                userId
         );
         profileCommandService.handle(command);
     }
@@ -57,7 +59,8 @@ public class ProfileContextFacade {
             String phone,
             String website,
             String profileImgUrl,
-            String sector
+            String sector,
+            Long userId
     ){
         var command = new CreateCompanyProfileCommand(
                 companyName,
@@ -68,7 +71,8 @@ public class ProfileContextFacade {
                 phone,
                 website,
                 profileImgUrl,
-                sector
+                sector,
+                userId
         );
         profileCommandService.handle(command);
     }
