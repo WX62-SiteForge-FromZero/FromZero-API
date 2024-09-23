@@ -33,26 +33,52 @@ public class ProfileController {
 
     @Operation(summary = "Get all developers")
     @GetMapping("/developers")
-    public ResponseEntity<List<Developer>> getAllDevelopers() {
-        return ResponseEntity.ok(profileQueryService.handle(new GetAllDevelopersAsyncQuery()));
+    public ResponseEntity<List<DeveloperProfileResource>> getAllDevelopers()
+    {
+        var getAllDevelopersQuery = new GetAllDevelopersAsyncQuery();
+        var developers = profileQueryService.handle(getAllDevelopersQuery);
+        if(developers.isEmpty())
+        {
+            return ResponseEntity.notFound().build();
+        }
+        var developersResource = developers.stream()
+                .map(DeveloperProfileResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(developersResource);
+    }
+
+    @Operation(summary = "Get all companies")
+    @GetMapping("/companies")
+    public ResponseEntity<List<CompanyProfileResource>> getAllCompanies()
+    {
+        var getAllCompaniesQuery = new GetAllCompaniesQuery();
+        var companies = profileQueryService.handle(getAllCompaniesQuery);
+        if(companies.isEmpty())
+        {
+            return ResponseEntity.notFound().build();
+        }
+        var companiesResource = companies.stream()
+                .map(CompanyProfileResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(companiesResource);
     }
 
     @Operation(summary = "Get Developer Profile Id by email")
     @GetMapping(value = "/developer/{email}")
-    public ResponseEntity<Long> getDeveloperProfileIdByEmail(@PathVariable String email) {
+    public ResponseEntity<String> getDeveloperProfileIdByEmail(@PathVariable String email) {
         var query = new GetDeveloperProfileIdByEmailQuery(email);
         var developer = profileQueryService.handle(query);
-        if (developer.isEmpty()) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(developer.get().getId());
+        var profileId = developer.map(value -> ResponseEntity.ok(value.getProfileId())).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(profileId.toString());
     }
 
     @Operation(summary = "Get Company Profile Id by email")
     @GetMapping(value = "/company/{email}")
-    public ResponseEntity<Long> getCompanyProfileIdByEmail(@PathVariable String email) {
+    public ResponseEntity<String> getCompanyProfileIdByEmail(@PathVariable String email) {
         var query = new GetCompanyProfileIdByEmailQuery(email);
         var company = profileQueryService.handle(query);
-        if (company.isEmpty()) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(company.get().getId());
+        var profileId = company.map(value -> ResponseEntity.ok(value.getProfileId())).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(profileId.toString());
     }
 
     @Operation(summary = "Get Developer Profile By Id")
@@ -66,7 +92,7 @@ public class ProfileController {
     }
 
     @Operation(summary = "Get Company Profile By Id")
-    @GetMapping(value = "/company/profile/{id}")
+    @GetMapping(value = "/company/id/{id}")
     public ResponseEntity<CompanyProfileResource> getCompanyProfile(@PathVariable Long id){
         var query = new GetCompanyByIdQuery(id);
         var company = profileQueryService.handle(query);
@@ -76,7 +102,7 @@ public class ProfileController {
     }
 
     @Operation(summary = "Update developer profile")
-    @PutMapping("/developer/profile/{id}")
+    @PutMapping("/developer/id/{id}")
     public ResponseEntity<Developer> updateDeveloperProfile(@PathVariable Long id, @RequestBody UpdateDeveloperProfileCommand command) {
 
         if (!id.equals(command.id())) {
@@ -99,4 +125,23 @@ public class ProfileController {
         return ResponseEntity.ok(updatedEnterprise.get());
     }
 
+    @Operation(summary = "Get Company By Profile Id")
+    @GetMapping(value = "/company/profileId/{profileId}")
+    public ResponseEntity<CompanyProfileResource> getCompanyByProfileId(@PathVariable String profileId){
+        var query = new GetCompanyByProfileIdQuery(profileId);
+        var company = profileQueryService.handle(query);
+        if (company.isEmpty()) return ResponseEntity.notFound().build();
+        var resource = CompanyProfileResourceFromEntityAssembler.toResourceFromEntity(company.get());
+        return ResponseEntity.ok(resource);
+    }
+
+    @Operation(summary = "Get Developer By Profile Id")
+    @GetMapping(value = "/developer/profileId/{profileId}")
+    public ResponseEntity<DeveloperProfileResource> getDeveloperByProfileId(@PathVariable String profileId){
+        var query = new GetDeveloperByProfileIdQuery(profileId);
+        var developer = profileQueryService.handle(query);
+        if (developer.isEmpty()) return ResponseEntity.notFound().build();
+        var resource = DeveloperProfileResourceFromEntityAssembler.toResourceFromEntity(developer.get());
+        return ResponseEntity.ok(resource);
+    }
 }

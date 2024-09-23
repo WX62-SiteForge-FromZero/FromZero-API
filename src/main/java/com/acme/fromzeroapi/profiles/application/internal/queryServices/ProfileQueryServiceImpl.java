@@ -27,6 +27,11 @@ public class ProfileQueryServiceImpl implements ProfileQueryService {
     }
 
     @Override
+    public List<Company> handle(GetAllCompaniesQuery query) {
+        return enterpriseRepository.findAll();
+    }
+
+    @Override
     public Optional<Developer> handle(GetDeveloperByIdQuery query) {
         return this.developerRepository.findById(query.developerId());
     }
@@ -44,5 +49,15 @@ public class ProfileQueryServiceImpl implements ProfileQueryService {
     @Override
     public Optional<Company> handle(GetCompanyByIdQuery query) {
         return enterpriseRepository.findById(query.id());
+    }
+
+    @Override
+    public Optional<Company> handle(GetCompanyByProfileIdQuery query) {
+        return enterpriseRepository.findByProfileId(query.profileId());
+    }
+
+    @Override
+    public Optional<Developer> handle(GetDeveloperByProfileIdQuery query) {
+        return developerRepository.findByProfileId(query.profileId());
     }
 }

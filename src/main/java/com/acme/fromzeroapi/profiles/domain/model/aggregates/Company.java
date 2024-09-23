@@ -1,6 +1,8 @@
 package com.acme.fromzeroapi.profiles.domain.model.aggregates;
 
 import com.acme.fromzeroapi.profiles.domain.model.commands.CreateCompanyProfileCommand;
+import com.acme.fromzeroapi.profiles.domain.model.valueobjects.ProfileId;
+import com.acme.fromzeroapi.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -8,10 +10,10 @@ import lombok.Setter;
 
 @Getter
 @Entity
-public class Company {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Company extends AuditableAbstractAggregateRoot<Company> {
+
+    @Embedded
+    private final ProfileId profileId;
 
     @NotBlank
     @Setter
@@ -41,7 +43,7 @@ public class Company {
     private User user;*/
 
     public Company(
-            //User user,
+            ProfileId profileId,
             String companyName,
             String description,
             String country,
@@ -52,7 +54,7 @@ public class Company {
             String sector,
             long userId
     ) {
-        //this.user = user;
+        this.profileId = profileId;
         this.companyName = companyName;
         this.description = description;
         this.country = country;
@@ -64,7 +66,8 @@ public class Company {
         this.userId = userId;
     }
 
-    public Company(CreateCompanyProfileCommand command){
+    public Company(ProfileId profileId, CreateCompanyProfileCommand command){
+        this();
         this.companyName =command.companyName();
         this.email=command.email();
         this.description=command.description();
@@ -78,6 +81,6 @@ public class Company {
     }
 
     public Company() {
-
+        this.profileId = new ProfileId();
     }
 }

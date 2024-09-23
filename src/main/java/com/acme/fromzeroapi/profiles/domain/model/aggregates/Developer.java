@@ -2,6 +2,8 @@ package com.acme.fromzeroapi.profiles.domain.model.aggregates;
 
 import com.acme.fromzeroapi.iam.domain.model.aggregates.User;
 import com.acme.fromzeroapi.profiles.domain.model.commands.CreateDeveloperProfileCommand;
+import com.acme.fromzeroapi.profiles.domain.model.valueobjects.ProfileId;
+import com.acme.fromzeroapi.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -9,10 +11,10 @@ import lombok.Setter;
 
 @Getter
 @Entity
-public class Developer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Developer extends AuditableAbstractAggregateRoot<Developer> {
+
+    @Embedded
+    private final ProfileId profileId;
 
     @NotBlank
     @Setter
@@ -55,7 +57,7 @@ public class Developer {
             String profileImgUrl,
             Long userId
             ) {
-        //this.user = user;
+        this();
         this.firstName = firstName;
         this.lastName = lastName;
         this.description = description;
@@ -68,6 +70,7 @@ public class Developer {
     }
 
     public Developer(CreateDeveloperProfileCommand command){
+        this();
         this.firstName=command.firstName();
         this.lastName=command.lastName();
         this.email=command.email();
@@ -81,6 +84,6 @@ public class Developer {
     }
 
     public Developer() {
-
+        this.profileId = new ProfileId();
     }
 }
