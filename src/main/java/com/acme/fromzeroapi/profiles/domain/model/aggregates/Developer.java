@@ -86,4 +86,8 @@ public class Developer extends AuditableAbstractAggregateRoot<Developer> {
     public Developer() {
         this.profileId = new ProfileId();
     }
+
+    public String getProfileId() {
+        return this.profileId.RecordId();
+    }
 }

@@ -1,6 +1,7 @@
 package com.acme.fromzeroapi.profiles.infrastructure.persistence.jpa.repositories;
 
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
+import com.acme.fromzeroapi.profiles.domain.model.valueobjects.ProfileId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +11,5 @@ import java.util.Optional;
 public interface DeveloperRepository extends JpaRepository<Developer, Long> {
     //Optional<Developer> findDeveloperByUserUserId(Long userId);
     Optional<Developer> findByEmail(String email);
-    Optional<Developer> findByProfileId(String profileId);
+    Optional<Developer> findByProfileId(ProfileId profileId);
 }

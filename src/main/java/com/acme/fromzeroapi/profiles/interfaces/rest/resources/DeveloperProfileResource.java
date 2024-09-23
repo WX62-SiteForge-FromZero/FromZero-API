@@ -2,6 +2,7 @@ package com.acme.fromzeroapi.profiles.interfaces.rest.resources;
 
 public record DeveloperProfileResource(
         Long id,
+        String ProfileId,
         String firstName,
         String lastName,
         String email,

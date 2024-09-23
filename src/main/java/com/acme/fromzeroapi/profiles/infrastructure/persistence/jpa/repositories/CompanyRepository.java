@@ -1,6 +1,7 @@
 package com.acme.fromzeroapi.profiles.infrastructure.persistence.jpa.repositories;
 
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
+import com.acme.fromzeroapi.profiles.domain.model.valueobjects.ProfileId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +11,5 @@ import java.util.Optional;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     //Optional<Company> findEnterpriseByUserUserId(Long userId);
     Optional<Company> findByEmail(String email);
-    Optional<Company> findByProfileId(String profileId);
+    Optional<Company> findByProfileId(ProfileId profileId);
 }

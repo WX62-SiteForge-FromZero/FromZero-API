@@ -2,6 +2,7 @@ package com.acme.fromzeroapi.profiles.application.internal.queryServices;
 
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
+import com.acme.fromzeroapi.profiles.domain.model.valueobjects.ProfileId;
 import com.acme.fromzeroapi.profiles.domain.services.ProfileQueryService;
 import com.acme.fromzeroapi.profiles.domain.model.queries.*;
 import com.acme.fromzeroapi.profiles.infrastructure.persistence.jpa.repositories.DeveloperRepository;
@@ -53,11 +54,13 @@ public class ProfileQueryServiceImpl implements ProfileQueryService {
 
     @Override
     public Optional<Company> handle(GetCompanyByProfileIdQuery query) {
-        return enterpriseRepository.findByProfileId(query.profileId());
+        var company = new ProfileId(query.profileId());
+        return enterpriseRepository.findByProfileId(company);
     }
 
     @Override
     public Optional<Developer> handle(GetDeveloperByProfileIdQuery query) {
-        return developerRepository.findByProfileId(query.profileId());
+        var developer = new ProfileId(query.profileId());
+        return developerRepository.findByProfileId(developer);
     }
 }

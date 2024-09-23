@@ -43,7 +43,6 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
     private User user;*/
 
     public Company(
-            ProfileId profileId,
             String companyName,
             String description,
             String country,
@@ -54,7 +53,7 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
             String sector,
             long userId
     ) {
-        this.profileId = profileId;
+        this();
         this.companyName = companyName;
         this.description = description;
         this.country = country;
@@ -66,7 +65,7 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
         this.userId = userId;
     }
 
-    public Company(ProfileId profileId, CreateCompanyProfileCommand command){
+    public Company(CreateCompanyProfileCommand command){
         this();
         this.companyName =command.companyName();
         this.email=command.email();
@@ -82,5 +81,9 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
 
     public Company() {
         this.profileId = new ProfileId();
+    }
+
+    public String getProfileId() {
+        return this.profileId.RecordId();
     }
 }
