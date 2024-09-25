@@ -90,11 +90,8 @@ public class ProfileContextFacade {
     }
 
     public void updateDeveloperCompletedProjects(Long developerId){
-        var developer = profileQueryService.handle(new GetDeveloperByIdQuery(developerId));
-        if (developer.isEmpty())return;
 
-        var count = developer.get().getCompletedProjects();
-        var command = new UpdateDeveloperCompletedProjectsCommand(developer.get(),count+1);
+        var command = new UpdateDeveloperCompletedProjectsCommand(developerId);
         var updatedDeveloper = this.profileCommandService.handle(command);
     }
 

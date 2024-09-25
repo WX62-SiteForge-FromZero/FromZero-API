@@ -22,43 +22,46 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
 
     @Override
     public Optional<Developer> handle(UpdateDeveloperCompletedProjectsCommand command) {
-        var updatedDeveloper = command.developer();
-        updatedDeveloper.setCompletedProjects(command.addProject());
-        this.developerRepository.save(updatedDeveloper);
-        return Optional.of(updatedDeveloper);
+        var developer = developerRepository.findById(command.developerId());
+        if (developer.isEmpty())return Optional.empty();
+        
+        int completedProjects = developer.get().getCompletedProjects();
+
+        developer.get().setCompletedProjects(completedProjects + 1);
+        this.developerRepository.save(developer.get());
+        return developer;
     }
 
     @Override
     public Optional<Developer> handle(UpdateDeveloperProfileCommand command) {
-        var developer = developerRepository.findById(command.id())
-                .orElseThrow(() -> new IllegalArgumentException("Developer with id " + command.id() + " not found"));
+        var developer = developerRepository.findById(command.id());
+        if (developer.isEmpty())return Optional.empty();
+        developer.get().setDescription(command.description());
+        developer.get().setCountry(command.country());
+        developer.get().setPhone(command.phone());
+        developer.get().setSpecialties(command.specialties());
+        developer.get().setProfileImgUrl(command.profileImgUrl());
 
-        developer.setDescription(command.description());
-        developer.setCountry(command.country());
-        developer.setPhone(command.phone());
-        developer.setSpecialties(command.specialties());
-        developer.setProfileImgUrl(command.profileImgUrl());
+        developerRepository.save(developer.get());
 
-        developerRepository.save(developer);
-
-        return Optional.of(developer);
+        return developer;
     }
 
     @Override
     public Optional<Company> handle(UpdateCompanyProfileCommand command) {
-        var enterprise= enterpriseRepository.findById(command.id())
-                .orElseThrow(() -> new IllegalArgumentException("Company with id " + command.id() + " not found"));
-        enterprise.setDescription(command.description());
-        enterprise.setCountry(command.country());
-        enterprise.setRuc(command.ruc());
-        enterprise.setPhone(command.phone());
-        enterprise.setWebsite(command.website());
-        enterprise.setProfileImgUrl(command.profileImgUrl());
-        enterprise.setSector(command.sector());
+        var company= enterpriseRepository.findById(command.id());
+        if (company.isEmpty())return Optional.empty();
+        company.get().setDescription(command.description());
+        company.get().setCountry(command.country());
+        company.get().setRuc(command.ruc());
+        company.get().setPhone(command.phone());
+        company.get().setWebsite(command.website());
+        company.get().setProfileImgUrl(command.profileImgUrl());
+        company.get().setSector(command.sector());
 
-        enterpriseRepository.save(enterprise);
+        enterpriseRepository.save(company.get());
 
-        return Optional.of(enterprise);
+        return company;
     }
 
     @Override

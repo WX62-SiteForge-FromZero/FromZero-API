@@ -1,7 +1,6 @@
-package com.acme.fromzeroapi.profiles.domain.model.commands;
+package com.acme.fromzeroapi.profiles.interfaces.rest.resources;
 
-public record UpdateDeveloperProfileCommand(
-        Long id,
+public record UpdateDeveloperProfileResource(
         String description,
         String country,
         String phone,

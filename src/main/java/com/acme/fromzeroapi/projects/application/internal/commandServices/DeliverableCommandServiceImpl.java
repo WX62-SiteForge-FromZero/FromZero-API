@@ -96,6 +96,10 @@ public class DeliverableCommandServiceImpl implements DeliverableCommandService 
             return Optional.empty();
         }
 
+        if (deliverable.get().getDeveloperMessage()==null){
+            return Optional.empty();
+        }
+
         if (command.accepted()) {
             deliverable.get().setState(DeliverableState.COMPLETADO);
         } else {

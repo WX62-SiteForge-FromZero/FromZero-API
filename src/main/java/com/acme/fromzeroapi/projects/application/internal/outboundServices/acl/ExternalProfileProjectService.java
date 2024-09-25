@@ -23,4 +23,8 @@ public class ExternalProfileProjectService {
     public Optional<Company> getCompanyById(Long companyId){
         return profileContextFacade.getCompanyById(companyId);
     }
+
+    public void updateDeveloperCompletedProjects(Long developerId){
+        profileContextFacade.updateDeveloperCompletedProjects(developerId);
+    }
 }

@@ -1,16 +1,16 @@
 package com.acme.fromzeroapi.profiles.interfaces.rest;
 
-import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
-import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
-import com.acme.fromzeroapi.profiles.domain.model.commands.UpdateCompanyProfileCommand;
-import com.acme.fromzeroapi.profiles.domain.model.commands.UpdateDeveloperProfileCommand;
 import com.acme.fromzeroapi.profiles.domain.model.queries.*;
 import com.acme.fromzeroapi.profiles.domain.services.ProfileCommandService;
 import com.acme.fromzeroapi.profiles.domain.services.ProfileQueryService;
 import com.acme.fromzeroapi.profiles.interfaces.rest.resources.CompanyProfileResource;
 import com.acme.fromzeroapi.profiles.interfaces.rest.resources.DeveloperProfileResource;
+import com.acme.fromzeroapi.profiles.interfaces.rest.resources.UpdateCompanyProfileResource;
+import com.acme.fromzeroapi.profiles.interfaces.rest.resources.UpdateDeveloperProfileResource;
 import com.acme.fromzeroapi.profiles.interfaces.rest.transform.CompanyProfileResourceFromEntityAssembler;
 import com.acme.fromzeroapi.profiles.interfaces.rest.transform.DeveloperProfileResourceFromEntityAssembler;
+import com.acme.fromzeroapi.profiles.interfaces.rest.transform.UpdateCompanyProfileCommandFromResourceAssembler;
+import com.acme.fromzeroapi.profiles.interfaces.rest.transform.UpdateDeveloperProfileCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -68,8 +68,10 @@ public class ProfileController {
     public ResponseEntity<String> getDeveloperProfileIdByEmail(@PathVariable String email) {
         var query = new GetDeveloperProfileIdByEmailQuery(email);
         var developer = profileQueryService.handle(query);
-        var profileId = developer.map(value -> ResponseEntity.ok(value.getProfileId())).orElseGet(() -> ResponseEntity.notFound().build());
-        return ResponseEntity.ok(profileId.toString());
+        if(developer.isEmpty())ResponseEntity.badRequest().build();
+        var profileId = developer.get().getProfileId();
+        //var profileId = developer.map(value -> ResponseEntity.ok(value.getProfileId())).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(profileId);
     }
 
     @Operation(summary = "Get Company Profile Id by email")
@@ -77,8 +79,13 @@ public class ProfileController {
     public ResponseEntity<String> getCompanyProfileIdByEmail(@PathVariable String email) {
         var query = new GetCompanyProfileIdByEmailQuery(email);
         var company = profileQueryService.handle(query);
-        var profileId = company.map(value -> ResponseEntity.ok(value.getProfileId())).orElseGet(() -> ResponseEntity.notFound().build());
-        return ResponseEntity.ok(profileId.toString());
+        if (company.isEmpty())ResponseEntity.badRequest().build();
+        /*var profileId = company.map(value ->
+                ResponseEntity.ok(value.getProfileId())
+        ).orElseGet(() -> ResponseEntity.notFound().build());*/
+        var profileId = company.get().getProfileId();
+        return ResponseEntity.ok(profileId);
+        //return ResponseEntity.ok(profileId.toString());
     }
 
     @Operation(summary = "Get Developer Profile By Id")
@@ -102,27 +109,31 @@ public class ProfileController {
     }
 
     @Operation(summary = "Update developer profile")
-    @PutMapping("/developer/id/{id}")
-    public ResponseEntity<Developer> updateDeveloperProfile(@PathVariable Long id, @RequestBody UpdateDeveloperProfileCommand command) {
+    @PutMapping("/developer/profile/{id}")
+    public ResponseEntity<DeveloperProfileResource> updateDeveloperProfile(@PathVariable Long id, @RequestBody UpdateDeveloperProfileResource resource) {
 
-        if (!id.equals(command.id())) {
+        /*if (!id.equals(command.id())) {
             throw new IllegalArgumentException("Path variable id doesn't match with request body id");
-        }
+        }*/
+        var command = UpdateDeveloperProfileCommandFromResourceAssembler.toCommandFromResource(id,resource);
         var updatedDeveloper = profileCommandService.handle(command);
-
-        return ResponseEntity.ok(updatedDeveloper.get());
+        if (updatedDeveloper.isEmpty()) return ResponseEntity.notFound().build();
+        var developerResource = DeveloperProfileResourceFromEntityAssembler.toResourceFromEntity(updatedDeveloper.get());
+        return ResponseEntity.ok(developerResource);
     }
 
     @Operation(summary = "Update company profile")
     @PutMapping("/company/profile/{id}")
-    public ResponseEntity<Company> updateEnterpriseProfile(@PathVariable Long id, @RequestBody UpdateCompanyProfileCommand command) {
+    public ResponseEntity<CompanyProfileResource> updateEnterpriseProfile(@PathVariable Long id, @RequestBody UpdateCompanyProfileResource resource) {
 
-        if (!id.equals(command.id())) {
+        /*if (!id.equals(command.id())) {
             throw new IllegalArgumentException("Path variable id doesn't match with request body id");
-        }
+        }*/
+        var command = UpdateCompanyProfileCommandFromResourceAssembler.toCommandFromResource(id,resource);
         var updatedEnterprise = profileCommandService.handle(command);
-
-        return ResponseEntity.ok(updatedEnterprise.get());
+        if (updatedEnterprise.isEmpty()) return ResponseEntity.notFound().build();
+        var companyResource = CompanyProfileResourceFromEntityAssembler.toResourceFromEntity(updatedEnterprise.get());
+        return ResponseEntity.ok(companyResource);
     }
 
     @Operation(summary = "Get Company By Profile Id")
