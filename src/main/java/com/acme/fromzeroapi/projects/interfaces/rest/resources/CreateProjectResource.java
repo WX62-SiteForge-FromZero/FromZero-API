@@ -2,6 +2,7 @@ package com.acme.fromzeroapi.projects.interfaces.rest.resources;
 
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.Frameworks;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProgrammingLanguages;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectCurrency;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectType;
 
 import java.util.List;
@@ -14,8 +15,9 @@ public record CreateProjectResource(
         Set<ProgrammingLanguages> languages,
         Set<Frameworks> frameworks,
         ProjectType type,
-        String budget,
-        String methodologies
+        Double budget,
+        ProjectCurrency currency,
+        List<MethodologyResource> methodologies
 ) {
 
 }

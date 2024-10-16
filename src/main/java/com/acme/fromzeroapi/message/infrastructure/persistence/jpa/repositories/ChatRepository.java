@@ -12,4 +12,5 @@ import java.util.List;
 public interface ChatRepository extends JpaRepository<Chat, Long> {
     List<Chat> findAllByCompany(Company company);
     List<Chat> findAllByDeveloper(Developer developer);
+    boolean existsByCompanyAndDeveloper(Company company, Developer developer);
 }

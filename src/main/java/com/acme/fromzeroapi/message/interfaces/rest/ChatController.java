@@ -35,9 +35,7 @@ public class ChatController {
     public ResponseEntity<List<ChatResource>> listChatsByCompanyId(@PathVariable String companyId) {
         var getAllChatsByCompanyProfileIdQuery = new GetAllChatsByCompanyProfileIdQuery(companyId);
         var chats = chatQueryService.handle(getAllChatsByCompanyProfileIdQuery);
-        if(chats.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+
         var chatResources = chats.stream()
                 .map(ChatResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
@@ -49,9 +47,7 @@ public class ChatController {
     public ResponseEntity<List<ChatResource>> listChatsByDeveloperId(@PathVariable String developerId) {
         var getAllChatsByDeveloperProfileIdQuery = new GetAllChatsByDeveloperProfileIdQuery(developerId);
         var chats = chatQueryService.handle(getAllChatsByDeveloperProfileIdQuery);
-        if(chats.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+
         var chatResources = chats.stream()
                 .map(ChatResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());

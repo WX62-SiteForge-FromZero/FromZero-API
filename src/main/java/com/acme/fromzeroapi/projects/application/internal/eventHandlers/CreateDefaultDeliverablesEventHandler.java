@@ -115,6 +115,39 @@ public class CreateDefaultDeliverablesEventHandler {
                 break;
 
             case ProjectType.MOBILE_APPLICATION:
+                deliverablesCommandList = Arrays.asList(
+                        new CreateDeliverableCommand(
+                                "Definición de Requisitos y Diseño de Interfaz",
+                                """
+                                Reunión inicial para definir los requisitos del proyecto y crear wireframes de la interfaz de usuario de la aplicación móvil.
+                                """,
+                                today, event.getProjectId()),
+                        new CreateDeliverableCommand(
+                                "Desarrollo del Frontend Móvil",
+                                """
+                                Implementar la interfaz de usuario de la aplicación móvil utilizando el framework correspondiente.
+                                """,
+                                today.plusWeeks(2), event.getProjectId()),
+                        new CreateDeliverableCommand(
+                                "Desarrollo del Backend y API",
+                                """
+                                Implementar el backend y las APIs necesarias para la comunicación entre el frontend y el servidor.
+                                """,
+                                today.plusWeeks(4), event.getProjectId()),
+                        new CreateDeliverableCommand(
+                                "Pruebas de Funcionalidad y Usabilidad",
+                                """
+                                Realizar pruebas para asegurar que la aplicación móvil funcione correctamente en diferentes dispositivos y sistemas operativos, y que la experiencia del usuario sea óptima.
+                                """,
+                                today.plusWeeks(6), event.getProjectId()),
+                        new CreateDeliverableCommand(
+                                "Preparación para Publicación",
+                                """
+                                Empaquetar la aplicación móvil para su publicación en tiendas (App Store y Google Play), incluyendo la creación de la documentación y los recursos necesarios.
+                                """,
+                                today.plusWeeks(8), event.getProjectId())
+                );
+                this.deliverableCommandService.handle(deliverablesCommandList);
                 break;
         }
 

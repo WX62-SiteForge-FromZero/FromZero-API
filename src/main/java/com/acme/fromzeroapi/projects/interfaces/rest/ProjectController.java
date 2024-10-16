@@ -1,19 +1,12 @@
 package com.acme.fromzeroapi.projects.interfaces.rest;
 
-import com.acme.fromzeroapi.projects.domain.model.commands.AssignProjectDeveloperCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectCandidatesListCommand;
 import com.acme.fromzeroapi.projects.domain.model.queries.*;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectState;
 import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
-import com.acme.fromzeroapi.projects.interfaces.rest.resources.AssignProjectDeveloperResource;
-import com.acme.fromzeroapi.projects.interfaces.rest.resources.CreateProjectResource;
-import com.acme.fromzeroapi.projects.interfaces.rest.resources.ProjectResource;
-import com.acme.fromzeroapi.projects.interfaces.rest.resources.UpdateProjectCandidatesListResource;
-import com.acme.fromzeroapi.projects.interfaces.rest.transform.AssignedProjectDeveloperResourceFromEntityAssembler;
-import com.acme.fromzeroapi.projects.interfaces.rest.transform.CreateProjectCommandFromResourceAssembler;
-import com.acme.fromzeroapi.projects.interfaces.rest.transform.ProjectResourceFromEntityAssembler;
-import com.acme.fromzeroapi.projects.interfaces.rest.transform.UpdatedProjectResourceFromEntityAssembler;
+import com.acme.fromzeroapi.projects.interfaces.rest.resources.*;
+import com.acme.fromzeroapi.projects.interfaces.rest.transform.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -85,9 +78,9 @@ public class ProjectController {
     @PatchMapping(value = "/{projectId}/add-candidate")
     public ResponseEntity<UpdateProjectCandidatesListResource> updateProjectCandidatesList(
             @PathVariable Long projectId,
-            @RequestBody Long developerId) {
+            @RequestBody SelectDeveloperResource resource) {
 
-        var command = new UpdateProjectCandidatesListCommand(developerId, projectId);
+        var command = new UpdateProjectCandidatesListCommand(resource.developerId(), projectId);
         var project = this.projectCommandService.handle(command);
         if (project.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -96,13 +89,13 @@ public class ProjectController {
         return ResponseEntity.ok(projectResource);
     }
 
-    @Operation(summary = "Assign Developer to a Project")
-    @PatchMapping(value = "/{projectId}/assign-developer")
+    @Operation(summary = "Set Developer to a Project")
+    @PatchMapping(value = "/{projectId}/set-developer")
     public ResponseEntity<AssignProjectDeveloperResource> setProjectDeveloper(
             @PathVariable Long projectId,
-            @RequestBody Long developerId) {
+            @RequestBody AcceptDeveloperResource resource) {
 
-        var command = new AssignProjectDeveloperCommand(projectId, developerId);
+        var command = AcceptProjectDeveloperCommandFromResourceAssembler.toCommandFromResource(resource,projectId);
         var project = projectCommandService.handle(command);
         if (project.isEmpty()) {
             return ResponseEntity.badRequest().build();

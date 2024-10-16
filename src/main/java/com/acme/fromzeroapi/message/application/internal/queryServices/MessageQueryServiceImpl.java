@@ -22,7 +22,10 @@ public class MessageQueryServiceImpl implements MessageQueryService {
 
     @Override
     public List<Message> handle(GetAllMessagesByChatIdQuery query) {
-        var chat = chatRepository.findById(query.chatId()).orElseThrow();
-        return messageRepository.findAllByChatOrderByCreatedAt(chat);
+        var chat = chatRepository.findById(query.chatId());
+        if (chat.isEmpty()){
+            return List.of();
+        }
+        return messageRepository.findAllByChatOrderByCreatedAt(chat.get());
     }
 }

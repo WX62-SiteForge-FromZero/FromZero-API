@@ -13,11 +13,11 @@ import java.util.Optional;
 @Service
 public class ProfileCommandServiceImpl implements ProfileCommandService {
     private final DeveloperRepository developerRepository;
-    private final CompanyRepository enterpriseRepository;
+    private final CompanyRepository companyRepository;
 
     public ProfileCommandServiceImpl(DeveloperRepository developerRepository, CompanyRepository enterpriseRepository) {
         this.developerRepository = developerRepository;
-        this.enterpriseRepository = enterpriseRepository;
+        this.companyRepository = enterpriseRepository;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
 
     @Override
     public Optional<Company> handle(UpdateCompanyProfileCommand command) {
-        var company= enterpriseRepository.findById(command.id());
+        var company= companyRepository.findById(command.id());
         if (company.isEmpty())return Optional.empty();
         company.get().setDescription(command.description());
         company.get().setCountry(command.country());
@@ -59,7 +59,7 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
         company.get().setProfileImgUrl(command.profileImgUrl());
         company.get().setSector(command.sector());
 
-        enterpriseRepository.save(company.get());
+        companyRepository.save(company.get());
 
         return company;
     }
@@ -67,7 +67,7 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
     @Override
     public void handle(CreateCompanyProfileCommand command) {
         var company = new Company(command);
-        enterpriseRepository.save(company);
+        companyRepository.save(company);
     }
 
     @Override

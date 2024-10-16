@@ -4,10 +4,9 @@ import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.acme.fromzeroapi.projects.domain.model.events.CreateDefaultDeliverablesEvent;
-import com.acme.fromzeroapi.projects.domain.model.valueObjects.Frameworks;
-import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProgrammingLanguages;
-import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectState;
-import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectType;
+import com.acme.fromzeroapi.projects.domain.model.events.CreateDeliverablesByMethodologiesEvent;
+import com.acme.fromzeroapi.projects.domain.model.events.SetProjectPaymentEvent;
+import com.acme.fromzeroapi.projects.domain.model.valueObjects.*;
 import com.acme.fromzeroapi.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -71,11 +70,9 @@ public class Project extends AuditableAbstractAggregateRoot<Project> {
     @Column(nullable = false)
     private ProjectType type;
 
-    @Column(columnDefinition = "TEXT",nullable = false)
-    private String budget;
-
-    @Column(columnDefinition = "TEXT")
-    private String methodologies;
+    @Embedded
+    @Column(nullable = false)
+    private ProjectBudget budget;
 
     public Project(CreateProjectCommand command, Company company) {
         this.name = command.name();
@@ -87,8 +84,7 @@ public class Project extends AuditableAbstractAggregateRoot<Project> {
         this.languages = command.languages();
         this.developer = null;
         this.type = command.type();
-        this.budget = command.budget();
-        this.methodologies = command.methodologies();
+        this.budget=new ProjectBudget(command.budget(),command.currency());
     }
 
     public Project() {
@@ -108,8 +104,10 @@ public class Project extends AuditableAbstractAggregateRoot<Project> {
         return this.domainEvents();
     }
 
-    public void sendToHighlightProject() {
-        // evento
+    public void setProjectPayment(Long projectId) {
+        this.registerEvent(new SetProjectPaymentEvent(this,projectId));
     }
-
+    public void createDeliverablesByMethodologies(Long projectId,String methodologies){
+        this.registerEvent(new CreateDeliverablesByMethodologiesEvent(this,projectId,methodologies));
+    }
 }

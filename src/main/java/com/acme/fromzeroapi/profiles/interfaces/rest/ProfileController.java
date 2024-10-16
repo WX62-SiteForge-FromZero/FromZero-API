@@ -3,10 +3,7 @@ package com.acme.fromzeroapi.profiles.interfaces.rest;
 import com.acme.fromzeroapi.profiles.domain.model.queries.*;
 import com.acme.fromzeroapi.profiles.domain.services.ProfileCommandService;
 import com.acme.fromzeroapi.profiles.domain.services.ProfileQueryService;
-import com.acme.fromzeroapi.profiles.interfaces.rest.resources.CompanyProfileResource;
-import com.acme.fromzeroapi.profiles.interfaces.rest.resources.DeveloperProfileResource;
-import com.acme.fromzeroapi.profiles.interfaces.rest.resources.UpdateCompanyProfileResource;
-import com.acme.fromzeroapi.profiles.interfaces.rest.resources.UpdateDeveloperProfileResource;
+import com.acme.fromzeroapi.profiles.interfaces.rest.resources.*;
 import com.acme.fromzeroapi.profiles.interfaces.rest.transform.CompanyProfileResourceFromEntityAssembler;
 import com.acme.fromzeroapi.profiles.interfaces.rest.transform.DeveloperProfileResourceFromEntityAssembler;
 import com.acme.fromzeroapi.profiles.interfaces.rest.transform.UpdateCompanyProfileCommandFromResourceAssembler;
@@ -35,7 +32,7 @@ public class ProfileController {
     @GetMapping("/developers")
     public ResponseEntity<List<DeveloperProfileResource>> getAllDevelopers()
     {
-        var getAllDevelopersQuery = new GetAllDevelopersAsyncQuery();
+        var getAllDevelopersQuery = new GetAllDevelopersQuery();
         var developers = profileQueryService.handle(getAllDevelopersQuery);
         if(developers.isEmpty())
         {
@@ -63,58 +60,28 @@ public class ProfileController {
         return ResponseEntity.ok(companiesResource);
     }
 
-    @Operation(summary = "Get Developer Profile Id by email")
-    @GetMapping(value = "/developer/{email}")
-    public ResponseEntity<String> getDeveloperProfileIdByEmail(@PathVariable String email) {
-        var query = new GetDeveloperProfileIdByEmailQuery(email);
-        var developer = profileQueryService.handle(query);
-        if(developer.isEmpty())ResponseEntity.badRequest().build();
-        var profileId = developer.get().getProfileId();
-        //var profileId = developer.map(value -> ResponseEntity.ok(value.getProfileId())).orElseGet(() -> ResponseEntity.notFound().build());
-        return ResponseEntity.ok(profileId);
-    }
-
-    @Operation(summary = "Get Company Profile Id by email")
-    @GetMapping(value = "/company/{email}")
-    public ResponseEntity<String> getCompanyProfileIdByEmail(@PathVariable String email) {
-        var query = new GetCompanyProfileIdByEmailQuery(email);
-        var company = profileQueryService.handle(query);
-        if (company.isEmpty())ResponseEntity.badRequest().build();
-        /*var profileId = company.map(value ->
-                ResponseEntity.ok(value.getProfileId())
-        ).orElseGet(() -> ResponseEntity.notFound().build());*/
-        var profileId = company.get().getProfileId();
-        return ResponseEntity.ok(profileId);
-        //return ResponseEntity.ok(profileId.toString());
-    }
-
-    @Operation(summary = "Get Developer Profile By Id")
-    @GetMapping(value = "/developer/profile/{id}")
-    public ResponseEntity<DeveloperProfileResource> getDeveloperProfile(@PathVariable Long id){
-        var query = new GetDeveloperByIdQuery(id);
-        var developer = profileQueryService.handle(query);
-        if (developer.isEmpty()) return ResponseEntity.notFound().build();
-        var resource = DeveloperProfileResourceFromEntityAssembler.toResourceFromEntity(developer.get());
+    @Operation(summary = "Get Company Id and Record Id By Email")
+    @GetMapping("/company-data/{email}")
+    public ResponseEntity<CompanyDataResource> getCompanyDataByEmail(@PathVariable String email) {
+        var company = profileQueryService.handle(new GetCompanyByEmailQuery(email));
+        if (company.isEmpty())return ResponseEntity.notFound().build();
+        var resource = new CompanyDataResource(company.get().getId(),company.get().getProfileId().RecordId());
         return ResponseEntity.ok(resource);
     }
 
-    @Operation(summary = "Get Company Profile By Id")
-    @GetMapping(value = "/company/id/{id}")
-    public ResponseEntity<CompanyProfileResource> getCompanyProfile(@PathVariable Long id){
-        var query = new GetCompanyByIdQuery(id);
-        var company = profileQueryService.handle(query);
-        if (company.isEmpty()) return ResponseEntity.notFound().build();
-        var resource = CompanyProfileResourceFromEntityAssembler.toResourceFromEntity(company.get());
+    @Operation(summary = "Get Developer Id and Record Id By Email")
+    @GetMapping("/developer-data/{email}")
+    public ResponseEntity<DeveloperDataResource> getDeveloperDataByEmail(@PathVariable String email) {
+        var developer = profileQueryService.handle(new GetDeveloperByEmailQuery(email));
+        if (developer.isEmpty())return ResponseEntity.notFound().build();
+        var resource = new DeveloperDataResource(developer.get().getId(),developer.get().getProfileId().RecordId());
         return ResponseEntity.ok(resource);
     }
 
     @Operation(summary = "Update developer profile")
-    @PutMapping("/developer/profile/{id}")
+    //@PutMapping("/developer/profile/{id}")
+    @PutMapping("/developer/{id}")
     public ResponseEntity<DeveloperProfileResource> updateDeveloperProfile(@PathVariable Long id, @RequestBody UpdateDeveloperProfileResource resource) {
-
-        /*if (!id.equals(command.id())) {
-            throw new IllegalArgumentException("Path variable id doesn't match with request body id");
-        }*/
         var command = UpdateDeveloperProfileCommandFromResourceAssembler.toCommandFromResource(id,resource);
         var updatedDeveloper = profileCommandService.handle(command);
         if (updatedDeveloper.isEmpty()) return ResponseEntity.notFound().build();
@@ -123,12 +90,9 @@ public class ProfileController {
     }
 
     @Operation(summary = "Update company profile")
-    @PutMapping("/company/profile/{id}")
+    //@PutMapping("/company/profile/{id}")
+    @PutMapping("/company/{id}")
     public ResponseEntity<CompanyProfileResource> updateEnterpriseProfile(@PathVariable Long id, @RequestBody UpdateCompanyProfileResource resource) {
-
-        /*if (!id.equals(command.id())) {
-            throw new IllegalArgumentException("Path variable id doesn't match with request body id");
-        }*/
         var command = UpdateCompanyProfileCommandFromResourceAssembler.toCommandFromResource(id,resource);
         var updatedEnterprise = profileCommandService.handle(command);
         if (updatedEnterprise.isEmpty()) return ResponseEntity.notFound().build();
@@ -136,21 +100,19 @@ public class ProfileController {
         return ResponseEntity.ok(companyResource);
     }
 
-    @Operation(summary = "Get Company By Profile Id")
-    @GetMapping(value = "/company/profileId/{profileId}")
-    public ResponseEntity<CompanyProfileResource> getCompanyByProfileId(@PathVariable String profileId){
-        var query = new GetCompanyByProfileIdQuery(profileId);
-        var company = profileQueryService.handle(query);
+    @Operation(summary = "Get Company Profile By Id or Record Id")
+    @GetMapping("/company/{id}")
+    public ResponseEntity<CompanyProfileResource> getCompanyProfile(@PathVariable String id){
+        var company = profileQueryService.handle(new GetCompanyProfileByIdOrRecordIdQuery(id));
         if (company.isEmpty()) return ResponseEntity.notFound().build();
         var resource = CompanyProfileResourceFromEntityAssembler.toResourceFromEntity(company.get());
         return ResponseEntity.ok(resource);
     }
 
-    @Operation(summary = "Get Developer By Profile Id")
-    @GetMapping(value = "/developer/profileId/{profileId}")
-    public ResponseEntity<DeveloperProfileResource> getDeveloperByProfileId(@PathVariable String profileId){
-        var query = new GetDeveloperByProfileIdQuery(profileId);
-        var developer = profileQueryService.handle(query);
+    @Operation(summary = "Get Developer Profile By Id or Record Id")
+    @GetMapping("/developer/{id}")
+    public ResponseEntity<DeveloperProfileResource> getDeveloperProfile(@PathVariable String id){
+        var developer = profileQueryService.handle(new GetDeveloperProfileByIdOrRecordIdQuery(id));
         if (developer.isEmpty()) return ResponseEntity.notFound().build();
         var resource = DeveloperProfileResourceFromEntityAssembler.toResourceFromEntity(developer.get());
         return ResponseEntity.ok(resource);

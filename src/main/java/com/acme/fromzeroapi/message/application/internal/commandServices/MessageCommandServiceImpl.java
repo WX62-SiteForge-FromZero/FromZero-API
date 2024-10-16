@@ -23,9 +23,12 @@ public class MessageCommandServiceImpl implements MessageCommandService {
 
     @Override
     public Optional<Message> handle(AddMessageCommand command) {
-        var chat = chatRepository.findById(command.chatId()).orElseThrow();
-        var message = new Message(command.senderId(), command.content(), chat);
-        chat.addMessage(message);
+        var chat = chatRepository.findById(command.chatId());
+        if (chat.isEmpty()){
+            return Optional.empty();
+        }
+        var message = new Message(command.senderId(), command.content(), chat.get());
+        chat.get().addMessage(message);
         messageRepository.save(message);
         return Optional.of(message);
     }

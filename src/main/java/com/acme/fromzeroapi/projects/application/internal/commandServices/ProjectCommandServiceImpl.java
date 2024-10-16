@@ -42,8 +42,10 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
             this.projectRepository.save(project);
 
-            if (project.getMethodologies().isBlank()) {
+            if (command.methodologies().isBlank()) {
                 project.createDefaultDeliverables(project.getId(), project.getType());
+            }else {
+                project.createDeliverablesByMethodologies(project.getId(), command.methodologies());
             }
 
             project.getDomainEvents().forEach(eventPublisher::publishEvent);
@@ -79,7 +81,7 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
     }
 
     @Override
-    public Optional<Project> handle(AssignProjectDeveloperCommand command) {
+    public Optional<Project> handle(AcceptProjectDeveloperCommand command) {
 
         var project = projectRepository.findById(command.projectId());
         if (project.isEmpty()) {
@@ -92,14 +94,19 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
         }
 
 
-        if(!project.get().getCandidates().contains(developer.get())){
+        if (!project.get().getCandidates().contains(developer.get())) {
             return Optional.empty();
         }
 
-        project.get().setDeveloper(developer.get());
-        project.get().getCandidates().clear();
-        project.get().setState(ProjectState.EN_PROGRESO);
+        if (command.accepted()) {
 
+            project.get().setDeveloper(developer.get());
+            project.get().getCandidates().clear();
+            project.get().setState(ProjectState.EN_PROGRESO);
+
+        }else {
+            project.get().getCandidates().remove(developer.get());
+        }
         this.projectRepository.save(project.get());
         return project;
     }
@@ -115,10 +122,20 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
         project.get().setProgress(percentComplete);
 
         if (project.get().getProgress()==100.0){
-            project.get().setState(ProjectState.COMPLETADO);
-            externalProfileProjectService.updateDeveloperCompletedProjects(project.get().getDeveloper().getId());
+            project.get().setProjectPayment(project.get().getId());
         }
 
+        this.projectRepository.save(project.get());
+    }
+
+    @Override
+    public void handle(FinishProjectCommand command) {
+        var project = projectRepository.findById(command.projectId());
+        if (project.isEmpty()) {
+            return;
+        }
+        project.get().setState(ProjectState.COMPLETADO);
+        externalProfileProjectService.updateDeveloperCompletedProjects(project.get().getDeveloper().getId());
         this.projectRepository.save(project.get());
     }
 }

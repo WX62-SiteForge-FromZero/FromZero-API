@@ -1,7 +1,7 @@
 package com.acme.fromzeroapi.profiles.domain.model.aggregates;
 
 import com.acme.fromzeroapi.profiles.domain.model.commands.CreateCompanyProfileCommand;
-import com.acme.fromzeroapi.profiles.domain.model.valueobjects.ProfileId;
+import com.acme.fromzeroapi.profiles.domain.model.valueObjects.ProfileId;
 import com.acme.fromzeroapi.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -83,7 +83,7 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
         this.profileId = new ProfileId();
     }
 
-    public String getProfileId() {
+    /*public String getProfileId() {
         return this.profileId.RecordId();
-    }
+    }*/
 }

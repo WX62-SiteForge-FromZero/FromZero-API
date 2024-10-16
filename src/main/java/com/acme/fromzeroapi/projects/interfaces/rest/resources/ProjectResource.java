@@ -7,7 +7,6 @@ import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProgrammingLangua
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectState;
 import com.acme.fromzeroapi.projects.domain.model.valueObjects.ProjectType;
 
-import java.util.List;
 import java.util.Set;
 
 public record ProjectResource(
@@ -22,7 +21,6 @@ public record ProjectResource(
         Set<ProgrammingLanguages> languages,
         Set<Frameworks> frameworks,
         ProjectType type,
-        String budget,
-        String methodologies
+        String budget
 ){
 }

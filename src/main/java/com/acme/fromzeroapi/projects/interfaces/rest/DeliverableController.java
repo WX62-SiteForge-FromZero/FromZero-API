@@ -6,8 +6,10 @@ import com.acme.fromzeroapi.projects.domain.model.queries.GetAllDeliverablesByPr
 import com.acme.fromzeroapi.projects.domain.model.queries.GetDeliverableByIdQuery;
 import com.acme.fromzeroapi.projects.domain.services.DeliverableCommandService;
 import com.acme.fromzeroapi.projects.domain.services.DeliverableQueryService;
+import com.acme.fromzeroapi.projects.interfaces.rest.resources.AcceptDeliverableResource;
 import com.acme.fromzeroapi.projects.interfaces.rest.resources.CreateDeliverableResource;
 import com.acme.fromzeroapi.projects.interfaces.rest.resources.DeliverableResource;
+import com.acme.fromzeroapi.projects.interfaces.rest.resources.DeveloperMessageResource;
 import com.acme.fromzeroapi.projects.interfaces.rest.transform.CreateDeliverableCommandFromResourceAssembler;
 import com.acme.fromzeroapi.projects.interfaces.rest.transform.DeliverableResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,9 +76,9 @@ public class DeliverableController {
     @PatchMapping(value = "/{deliverableId}/send")
     public ResponseEntity<DeliverableResource> sendDeliverable(
             @PathVariable Long deliverableId,
-            @RequestBody String developerMessage) {
+            @RequestBody DeveloperMessageResource resource) {
 
-        var updateDeveloperMessageCommand = new UpdateDeveloperMessageCommand(deliverableId, developerMessage);
+        var updateDeveloperMessageCommand = new UpdateDeveloperMessageCommand(deliverableId, resource.developerMessage());
         var deliverable = this.deliverableCommandService.handle(updateDeveloperMessageCommand);
         if (deliverable.isEmpty()) return ResponseEntity.badRequest().build();
         var deliverableResource = DeliverableResourceFromEntityAssembler.toResourceFromEntity(deliverable.get());
@@ -87,9 +89,9 @@ public class DeliverableController {
     @PatchMapping(value = "/{deliverableId}/review")
     public ResponseEntity<DeliverableResource> reviewDeliverable(
             @PathVariable Long deliverableId,
-            @RequestBody Boolean accepted) {
+            @RequestBody AcceptDeliverableResource resource) {
 
-        var updateDeliverableStatusCommand = new UpdateDeliverableStatusCommand(deliverableId, accepted);
+        var updateDeliverableStatusCommand = new UpdateDeliverableStatusCommand(deliverableId, resource.accepted());
         var deliverable = this.deliverableCommandService.handle(updateDeliverableStatusCommand);
         if (deliverable.isEmpty()) return ResponseEntity.badRequest().build();
         var deliverableResource = DeliverableResourceFromEntityAssembler.toResourceFromEntity(deliverable.get());

@@ -3,7 +3,6 @@ package com.acme.fromzeroapi.message.domain.model.aggregates;
 import com.acme.fromzeroapi.message.domain.model.entities.Message;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
-import com.acme.fromzeroapi.profiles.domain.model.valueobjects.ProfileId;
 import com.acme.fromzeroapi.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import lombok.Getter;

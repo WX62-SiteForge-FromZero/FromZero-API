@@ -7,7 +7,7 @@ public class DeveloperProfileResourceFromEntityAssembler {
     public static DeveloperProfileResource toResourceFromEntity(Developer entity){
         return new DeveloperProfileResource(
                 entity.getId(),
-                entity.getProfileId(),
+                entity.getProfileId().RecordId(),
                 entity.getFirstName(),
                 entity.getLastName(),
                 entity.getEmail(),

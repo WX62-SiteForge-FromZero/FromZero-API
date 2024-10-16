@@ -7,8 +7,10 @@ public class ChatResourceFromEntityAssembler {
     public static ChatResource toResourceFromEntity(Chat entity) {
         return new ChatResource(
                 entity.getId(),
-                entity.getDeveloper().getProfileId(),
-                entity.getCompany().getProfileId(),
+                /*entity.getDeveloper().getProfileId().RecordId(),
+                entity.getCompany().getProfileId().RecordId(),*/
+                entity.getDeveloper(),
+                entity.getCompany(),
                 entity.getCreatedAt()
         );
     }

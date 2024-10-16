@@ -7,7 +7,7 @@ public class CompanyProfileResourceFromEntityAssembler {
     public static CompanyProfileResource toResourceFromEntity(Company entity){
         return new CompanyProfileResource(
                 entity.getId(),
-                entity.getProfileId(),
+                entity.getProfileId().RecordId(),
                 entity.getCompanyName(),
                 entity.getEmail(),
                 entity.getDescription(),

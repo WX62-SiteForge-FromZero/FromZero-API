@@ -32,13 +32,11 @@ public class MessageController {
     }
 
     @Operation(summary = "Get all messages by chat id")
-    @GetMapping("/send/{chatId}")
+    @GetMapping("/chat/{chatId}")
     public ResponseEntity<List<MessageResource>> listMessagesByChatId(@PathVariable Long chatId) {
         var getAllMessagesByChatIdQuery = new GetAllMessagesByChatIdQuery(chatId);
         var messages = messageQueryService.handle(getAllMessagesByChatIdQuery);
-        if(messages.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+
         var messageResources = messages.stream()
                 .map(MessageResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
@@ -46,7 +44,7 @@ public class MessageController {
     }
 
     @Operation(summary = "Send a message")
-    @PostMapping("/messages")
+    @PostMapping
     public ResponseEntity<MessageResource> sendMessage(@RequestBody AddMessageCommandResource addMessageCommandResource) {
         var addMessageCommand = AddMessageCommandFromResourceAssembler.toCommandFromResource(addMessageCommandResource);
         var message = messageCommandService.handle(addMessageCommand);

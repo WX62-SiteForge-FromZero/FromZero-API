@@ -10,6 +10,8 @@ import com.acme.fromzeroapi.message.domain.model.queries.GetChatByIdQuery;
 import com.acme.fromzeroapi.message.domain.services.ChatQueryService;
 import com.acme.fromzeroapi.message.infrastructure.persistence.jpa.repositories.ChatRepository;
 import com.acme.fromzeroapi.message.infrastructure.persistence.jpa.repositories.MessageRepository;
+import com.acme.fromzeroapi.shared.domain.exceptions.CompanyNotFoundException;
+import com.acme.fromzeroapi.shared.domain.exceptions.DeveloperNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +28,21 @@ public class ChatQueryServiceImpl implements ChatQueryService {
     }
     @Override
     public List<Chat> handle(GetAllChatsByCompanyProfileIdQuery query) {
-        var company = externalProfileMesssageService.getCompanyByProfileId(query.companyProfileId()).orElseThrow();
+        var company = externalProfileMesssageService
+                .getCompanyByProfileId(query.companyProfileId())
+                .orElseThrow(
+                        ()-> new CompanyNotFoundException(query.companyProfileId())
+                );
         return chatRepository.findAllByCompany(company);
     }
 
     @Override
     public List<Chat> handle(GetAllChatsByDeveloperProfileIdQuery query) {
-        var developer = externalProfileMesssageService.getDeveloperByProfileId(query.developerProfileId()).orElseThrow();
+        var developer = externalProfileMesssageService
+                .getDeveloperByProfileId(query.developerProfileId())
+                .orElseThrow(
+                        ()->new DeveloperNotFoundException(query.developerProfileId())
+                );
         return chatRepository.findAllByDeveloper(developer);
     }
 
