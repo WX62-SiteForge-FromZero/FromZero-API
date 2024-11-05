@@ -7,7 +7,7 @@ import java.util.Set;
 public record AssignProjectDeveloperResource(
         String name,
         ProjectState state,
-        Developer developer,
-        Set<Developer> candidates
+        String developer,
+        Set<String> candidates
 ) {
 }

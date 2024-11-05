@@ -7,7 +7,7 @@ public class UpdatedProjectResourceFromEntityAssembler {
     public static UpdateProjectCandidatesListResource toResourceFromEntity(Project entity){
         return new UpdateProjectCandidatesListResource(
                 entity.getName(),
-                entity.getCandidates()
+                entity.getCandidateIds()
         );
     }
 }

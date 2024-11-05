@@ -106,7 +106,7 @@ public class ProjectController {
 
     @Operation(summary = "Get All Projects By Developer Id")
     @GetMapping(value = "/developer/{developerId}")
-    public ResponseEntity<List<ProjectResource>> getAllProjectsByDeveloperId(@PathVariable Long developerId){
+    public ResponseEntity<List<ProjectResource>> getAllProjectsByDeveloperId(@PathVariable String developerId){
         var query = new GetAllProjectsByDeveloperIdQuery(developerId);
         var projects=this.projectQueryService.handle(query);
         var projectsResources = projects.stream()
@@ -117,7 +117,7 @@ public class ProjectController {
 
     @Operation(summary = "Get All Projects By Company Id")
     @GetMapping(value = "/company/{companyId}")
-    public ResponseEntity<List<ProjectResource>> getAllProjectsByEnterpriseId(@PathVariable Long companyId){
+    public ResponseEntity<List<ProjectResource>> getAllProjectsByEnterpriseId(@PathVariable String companyId){
         var query = new GetAllProjectsByCompanyIdQuery(companyId);
         var projects =this.projectQueryService.handle(query);
         var projectResources = projects.stream()

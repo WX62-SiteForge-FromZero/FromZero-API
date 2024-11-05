@@ -5,7 +5,7 @@ import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 
 public record UpdateProjectCandidatesListCommand(
-        Long developerId,
+        String developerId,
         Long projectId
 ) {
 }
