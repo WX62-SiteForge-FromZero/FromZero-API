@@ -16,7 +16,7 @@ public class ExternalProfileProjectService {
         this.profileContextFacade = profileContextFacade;
     }
 
-    public Optional<Developer> getDeveloperById(Long developerId){
+    public Optional<Developer> getDeveloperById(String developerId){
         return profileContextFacade.getDeveloperById(developerId);
     }
 
