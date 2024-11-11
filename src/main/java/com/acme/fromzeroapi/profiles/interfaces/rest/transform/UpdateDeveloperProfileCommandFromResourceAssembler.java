@@ -4,7 +4,7 @@ import com.acme.fromzeroapi.profiles.domain.model.commands.UpdateDeveloperProfil
 import com.acme.fromzeroapi.profiles.interfaces.rest.resources.UpdateDeveloperProfileResource;
 
 public class UpdateDeveloperProfileCommandFromResourceAssembler {
-    public static UpdateDeveloperProfileCommand toCommandFromResource(Long id, UpdateDeveloperProfileResource resource) {
+    public static UpdateDeveloperProfileCommand toCommandFromResource(String id, UpdateDeveloperProfileResource resource) {
         return new UpdateDeveloperProfileCommand(
                 id,
                 resource.description(),

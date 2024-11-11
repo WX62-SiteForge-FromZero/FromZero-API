@@ -1,7 +1,7 @@
 package com.acme.fromzeroapi.profiles.domain.model.commands;
 
 public record UpdateCompanyProfileCommand(
-        Long id,
+        String id,
         String description,
         String country,
         String ruc,
