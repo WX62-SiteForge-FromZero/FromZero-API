@@ -74,7 +74,7 @@ public class DeliverableCommandServiceImpl implements DeliverableCommandService 
         if (deliverable.isEmpty()) {
             return Optional.empty();
         }
-        if (deliverable.get().getProject().getDeveloper()==null){
+        if (deliverable.get().getProject().getDeveloperId()==null){
             return Optional.empty();
         }
         deliverable.get().setDeveloperMessage(command.message());
@@ -92,7 +92,7 @@ public class DeliverableCommandServiceImpl implements DeliverableCommandService 
             return Optional.empty();
         }
 
-        if (deliverable.get().getProject().getDeveloper()==null){
+        if (deliverable.get().getProject().getDeveloperId()==null){
             return Optional.empty();
         }
 

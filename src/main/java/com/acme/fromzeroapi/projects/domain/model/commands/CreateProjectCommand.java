@@ -10,7 +10,7 @@ import java.util.Set;
 public record CreateProjectCommand(
         String name,
         String description,
-        Long companyId,
+        String companyId,
         Set<ProgrammingLanguages> languages,
         Set<Frameworks> frameworks,
         ProjectType type,

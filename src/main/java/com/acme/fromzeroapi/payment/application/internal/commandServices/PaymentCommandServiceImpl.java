@@ -48,14 +48,16 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
         if (project.isEmpty()){
             return Optional.empty();
         }
-        var payment = paymentRepository.findByProject(project.get());
+        //var payment = paymentRepository.findByProject(project.get());
+        var payment = paymentRepository.findByProjectId(command.projectId());
         if (payment.isEmpty()){
             return Optional.empty();
         }
         payment.get().updateCard(command);
         payment.get().setStatus(PaymentStatus.COMPLETADO);
 
-        payment.get().finishProject(payment.get().getProject().getId() );
+        //payment.get().finishProject(payment.get().getProject().getId() );
+        payment.get().finishProject(payment.get().getProjectId());
 
         paymentRepository.save(payment.get());
         return payment;

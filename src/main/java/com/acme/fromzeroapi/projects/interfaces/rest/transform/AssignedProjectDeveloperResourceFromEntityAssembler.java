@@ -8,8 +8,8 @@ public class AssignedProjectDeveloperResourceFromEntityAssembler {
         return new AssignProjectDeveloperResource(
                 entity.getName(),
                 entity.getState(),
-                entity.getDeveloper(),
-                entity.getCandidates()
+                entity.getDeveloperId(),
+                entity.getCandidateIds()
         );
     }
 }

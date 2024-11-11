@@ -33,12 +33,12 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
     public Optional<Project> handle(CreateProjectCommand command) {
 
         try {
-            var company = externalProfileProjectService.getCompanyById(command.companyId());
+            var company = externalProfileProjectService.getCompanyByProfileId(command.companyId());
             if (company.isEmpty()) {
                 return Optional.empty();
             }
 
-            var project = new Project(command, company.get());
+            var project = new Project(command);
 
             this.projectRepository.save(project);
 
@@ -65,16 +65,16 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
             return Optional.empty();
         }
 
-        if (project.get().getDeveloper()!=null){
+        if (project.get().getDeveloperId()!=null){
             return Optional.empty();
         }
 
-        var developer = externalProfileProjectService.getDeveloperById(command.developerId());
+        var developer = externalProfileProjectService.getDeveloperByProfileId(command.developerId());
         if (developer.isEmpty()) {
             return Optional.empty();
         }
 
-        project.get().getCandidates().add(developer.get());
+        project.get().getCandidateIds().add(developer.get().getProfileId().RecordId());
 
         this.projectRepository.save(project.get());
         return project;
@@ -88,24 +88,24 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
             return Optional.empty();
         }
 
-        var developer = externalProfileProjectService.getDeveloperById(command.developerId());
+        var developer = externalProfileProjectService.getDeveloperByProfileId(command.developerId());
         if (developer.isEmpty()) {
             return Optional.empty();
         }
 
 
-        if (!project.get().getCandidates().contains(developer.get())) {
+        if (!project.get().getCandidateIds().contains(developer.get().getProfileId().RecordId())) {
             return Optional.empty();
         }
 
         if (command.accepted()) {
 
-            project.get().setDeveloper(developer.get());
-            project.get().getCandidates().clear();
+            project.get().setDeveloperId(developer.get().getProfileId().RecordId());
+            project.get().getCandidateIds().clear();
             project.get().setState(ProjectState.EN_PROGRESO);
 
         }else {
-            project.get().getCandidates().remove(developer.get());
+            project.get().getCandidateIds().remove(developer.get().getProfileId().RecordId());
         }
         this.projectRepository.save(project.get());
         return project;
@@ -135,7 +135,8 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
             return;
         }
         project.get().setState(ProjectState.COMPLETADO);
-        externalProfileProjectService.updateDeveloperCompletedProjects(project.get().getDeveloper().getId());
+        var developer = externalProfileProjectService.getDeveloperByProfileId(project.get().getDeveloperId());
+        externalProfileProjectService.updateDeveloperCompletedProjects(developer.get().getId());
         this.projectRepository.save(project.get());
     }
 }

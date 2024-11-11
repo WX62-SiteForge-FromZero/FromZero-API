@@ -7,8 +7,8 @@ public class PaymentResourceFromEntityAssembler {
     public static PaymentResource toResourceFromEntity(Payment entity){
         return new PaymentResource(
           entity.getId(),
-          entity.getDeveloper().getId(),
-          entity.getProject().getId(),
+          entity.getDeveloperId(),
+          entity.getProjectId(),
           entity.getAmount().paymentAmountToString(),
           entity.getStatus()
         );

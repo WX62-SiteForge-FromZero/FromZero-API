@@ -3,6 +3,7 @@ package com.acme.fromzeroapi.profiles.application.internal.commandServices;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.profiles.domain.model.aggregates.Company;
 import com.acme.fromzeroapi.profiles.domain.model.commands.*;
+import com.acme.fromzeroapi.profiles.domain.model.valueObjects.ProfileId;
 import com.acme.fromzeroapi.profiles.domain.services.ProfileCommandService;
 import com.acme.fromzeroapi.profiles.infrastructure.persistence.jpa.repositories.CompanyRepository;
 import com.acme.fromzeroapi.profiles.infrastructure.persistence.jpa.repositories.DeveloperRepository;
@@ -34,7 +35,8 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
 
     @Override
     public Optional<Developer> handle(UpdateDeveloperProfileCommand command) {
-        var developer = developerRepository.findById(command.id());
+        //var developer = developerRepository.findById(command.id());
+        var developer = developerRepository.findByProfileId(new ProfileId(command.id()));
         if (developer.isEmpty())return Optional.empty();
         developer.get().setDescription(command.description());
         developer.get().setCountry(command.country());
@@ -49,7 +51,7 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
 
     @Override
     public Optional<Company> handle(UpdateCompanyProfileCommand command) {
-        var company= companyRepository.findById(command.id());
+        var company= companyRepository.findByProfileId(new ProfileId(command.id()));
         if (company.isEmpty())return Optional.empty();
         company.get().setDescription(command.description());
         company.get().setCountry(command.country());

@@ -79,9 +79,8 @@ public class ProfileController {
     }
 
     @Operation(summary = "Update developer profile")
-    //@PutMapping("/developer/profile/{id}")
     @PutMapping("/developer/{id}")
-    public ResponseEntity<DeveloperProfileResource> updateDeveloperProfile(@PathVariable Long id, @RequestBody UpdateDeveloperProfileResource resource) {
+    public ResponseEntity<DeveloperProfileResource> updateDeveloperProfile(@PathVariable String id, @RequestBody UpdateDeveloperProfileResource resource) {
         var command = UpdateDeveloperProfileCommandFromResourceAssembler.toCommandFromResource(id,resource);
         var updatedDeveloper = profileCommandService.handle(command);
         if (updatedDeveloper.isEmpty()) return ResponseEntity.notFound().build();
@@ -90,9 +89,8 @@ public class ProfileController {
     }
 
     @Operation(summary = "Update company profile")
-    //@PutMapping("/company/profile/{id}")
     @PutMapping("/company/{id}")
-    public ResponseEntity<CompanyProfileResource> updateEnterpriseProfile(@PathVariable Long id, @RequestBody UpdateCompanyProfileResource resource) {
+    public ResponseEntity<CompanyProfileResource> updateEnterpriseProfile(@PathVariable String id, @RequestBody UpdateCompanyProfileResource resource) {
         var command = UpdateCompanyProfileCommandFromResourceAssembler.toCommandFromResource(id,resource);
         var updatedEnterprise = profileCommandService.handle(command);
         if (updatedEnterprise.isEmpty()) return ResponseEntity.notFound().build();

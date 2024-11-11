@@ -58,7 +58,7 @@ public class PaymentController {
 
     @Operation(summary = "Get Payments By Developer Id")
     @GetMapping(value = "/developer/{developerId}")
-    public ResponseEntity<List<PaymentResource>> getAllPaymentsByDeveloper(@PathVariable Long developerId) {
+    public ResponseEntity<List<PaymentResource>> getAllPaymentsByDeveloper(@PathVariable String developerId) {
         var payments = paymentQueryService.handle(new GetPaymentsByDeveloperIdQuery(developerId));
         var paymentsResources = payments.stream()
                 .map(PaymentResourceFromEntityAssembler::toResourceFromEntity)

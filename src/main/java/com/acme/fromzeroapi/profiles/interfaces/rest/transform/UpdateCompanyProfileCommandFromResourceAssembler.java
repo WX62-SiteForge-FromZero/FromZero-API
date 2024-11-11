@@ -4,7 +4,7 @@ import com.acme.fromzeroapi.profiles.domain.model.commands.UpdateCompanyProfileC
 import com.acme.fromzeroapi.profiles.interfaces.rest.resources.UpdateCompanyProfileResource;
 
 public class UpdateCompanyProfileCommandFromResourceAssembler {
-    public static UpdateCompanyProfileCommand toCommandFromResource(Long id, UpdateCompanyProfileResource resource){
+    public static UpdateCompanyProfileCommand toCommandFromResource(String id, UpdateCompanyProfileResource resource){
         return new UpdateCompanyProfileCommand(
                 id,
                 resource.description(),

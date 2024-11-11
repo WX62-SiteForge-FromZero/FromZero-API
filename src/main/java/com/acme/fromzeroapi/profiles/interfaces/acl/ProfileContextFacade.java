@@ -5,10 +5,7 @@ import com.acme.fromzeroapi.profiles.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.profiles.domain.model.commands.CreateCompanyProfileCommand;
 import com.acme.fromzeroapi.profiles.domain.model.commands.CreateDeveloperProfileCommand;
 import com.acme.fromzeroapi.profiles.domain.model.commands.UpdateDeveloperCompletedProjectsCommand;
-import com.acme.fromzeroapi.profiles.domain.model.queries.GetCompanyByIdQuery;
-import com.acme.fromzeroapi.profiles.domain.model.queries.GetCompanyByProfileIdQuery;
-import com.acme.fromzeroapi.profiles.domain.model.queries.GetDeveloperByIdQuery;
-import com.acme.fromzeroapi.profiles.domain.model.queries.GetDeveloperByProfileIdQuery;
+import com.acme.fromzeroapi.profiles.domain.model.queries.*;
 import com.acme.fromzeroapi.profiles.domain.services.ProfileCommandService;
 import com.acme.fromzeroapi.profiles.domain.services.ProfileQueryService;
 //import com.acme.fromzeroapi.developer_branch_projects.domain.model.queries.GetDeveloperByIdQuery;
@@ -81,8 +78,9 @@ public class ProfileContextFacade {
         profileCommandService.handle(command);
     }
 
-    public Optional<Developer> getDeveloperById(Long id){
-        return profileQueryService.handle(new GetDeveloperByIdQuery(id));
+    public Optional<Developer> getDeveloperById(String id){
+        //return profileQueryService.handle(new GetDeveloperByIdQuery(id));
+        return profileQueryService.handle(new GetDeveloperProfileByIdOrRecordIdQuery(id));
     }
 
     public Optional<Company> getCompanyById(Long id){

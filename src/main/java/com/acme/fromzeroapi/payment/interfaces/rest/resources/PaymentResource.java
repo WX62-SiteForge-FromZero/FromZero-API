@@ -4,7 +4,7 @@ import com.acme.fromzeroapi.payment.domain.model.valueObjects.PaymentStatus;
 
 public record PaymentResource(
         Long id,
-        Long developerId,
+        String developerId,
         Long projectId,
         String amount,
         PaymentStatus status

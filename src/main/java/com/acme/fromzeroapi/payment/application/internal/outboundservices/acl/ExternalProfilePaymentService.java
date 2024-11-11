@@ -13,7 +13,7 @@ public class ExternalProfilePaymentService {
     public ExternalProfilePaymentService(ProfileContextFacade profileContextFacade) {
         this.profileContextFacade = profileContextFacade;
     }
-    public Optional<Developer> fetchDeveloper(Long developerId){
+    public Optional<Developer> fetchDeveloper(String developerId){
         return profileContextFacade.getDeveloperById(developerId);
     }
 }
