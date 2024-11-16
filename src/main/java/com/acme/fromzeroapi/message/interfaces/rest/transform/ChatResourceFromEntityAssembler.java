@@ -9,8 +9,8 @@ public class ChatResourceFromEntityAssembler {
                 entity.getId(),
                 /*entity.getDeveloper().getProfileId().RecordId(),
                 entity.getCompany().getProfileId().RecordId(),*/
-                entity.getDeveloper(),
-                entity.getCompany(),
+                entity.getDeveloper().getProfileId().RecordId(),
+                entity.getCompany().getProfileId().RecordId(),
                 entity.getCreatedAt()
         );
     }

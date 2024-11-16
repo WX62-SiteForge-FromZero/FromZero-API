@@ -3,6 +3,7 @@ package com.acme.fromzeroapi.message.interfaces.rest;
 import com.acme.fromzeroapi.message.domain.model.queries.GetAllChatsByCompanyProfileIdQuery;
 import com.acme.fromzeroapi.message.domain.model.queries.GetAllChatsByDeveloperProfileIdQuery;
 import com.acme.fromzeroapi.message.domain.model.queries.GetChatByIdQuery;
+import com.acme.fromzeroapi.message.domain.model.queries.GetChatByCompanyIdAndDeveloperIdQuery;
 import com.acme.fromzeroapi.message.domain.services.ChatCommandService;
 import com.acme.fromzeroapi.message.domain.services.ChatQueryService;
 import com.acme.fromzeroapi.message.interfaces.rest.resources.ChatResource;
@@ -66,5 +67,25 @@ public class ChatController {
         var chat = chatQueryService.handle(getChatByIdQuery);
         var chatResource = ChatResourceFromEntityAssembler.toResourceFromEntity(chat.get());
         return new ResponseEntity<>(chatResource, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/chats/{developerId}/{companyId}")
+    public ResponseEntity<ChatResource> getChatsByDeveloperIdAndCompanyId(@PathVariable String companyId, @PathVariable String developerId) {
+        var chats = chatQueryService.handle(new GetChatByCompanyIdAndDeveloperIdQuery(developerId, companyId));
+        if (chats.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var chatResource = ChatResourceFromEntityAssembler.toResourceFromEntity(chats.get());
+        return ResponseEntity.ok(chatResource);
+    }
+
+    @GetMapping("/chats/{chatId}")
+    public ResponseEntity<ChatResource> getChatById(@PathVariable Long chatId) {
+        var chat = chatQueryService.handle(new GetChatByIdQuery(chatId));
+        if (chat.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var chatResource = ChatResourceFromEntityAssembler.toResourceFromEntity(chat.get());
+        return ResponseEntity.ok(chatResource);
     }
 }

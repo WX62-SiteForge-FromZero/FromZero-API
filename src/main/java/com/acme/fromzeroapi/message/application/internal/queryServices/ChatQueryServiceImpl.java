@@ -2,14 +2,9 @@ package com.acme.fromzeroapi.message.application.internal.queryServices;
 
 import com.acme.fromzeroapi.message.application.internal.outboundservices.ExternalProfileMesssageService;
 import com.acme.fromzeroapi.message.domain.model.aggregates.Chat;
-import com.acme.fromzeroapi.message.domain.model.entities.Message;
-import com.acme.fromzeroapi.message.domain.model.queries.GetAllChatsByCompanyProfileIdQuery;
-import com.acme.fromzeroapi.message.domain.model.queries.GetAllChatsByDeveloperProfileIdQuery;
-import com.acme.fromzeroapi.message.domain.model.queries.GetAllMessagesByChatIdQuery;
-import com.acme.fromzeroapi.message.domain.model.queries.GetChatByIdQuery;
+import com.acme.fromzeroapi.message.domain.model.queries.*;
 import com.acme.fromzeroapi.message.domain.services.ChatQueryService;
 import com.acme.fromzeroapi.message.infrastructure.persistence.jpa.repositories.ChatRepository;
-import com.acme.fromzeroapi.message.infrastructure.persistence.jpa.repositories.MessageRepository;
 import com.acme.fromzeroapi.shared.domain.exceptions.CompanyNotFoundException;
 import com.acme.fromzeroapi.shared.domain.exceptions.DeveloperNotFoundException;
 import org.springframework.stereotype.Service;
@@ -49,5 +44,16 @@ public class ChatQueryServiceImpl implements ChatQueryService {
     @Override
     public Optional<Chat> handle(GetChatByIdQuery query) {
         return chatRepository.findById(query.chatId());
+    }
+
+    @Override
+    public Optional<Chat> handle(GetChatByCompanyIdAndDeveloperIdQuery query) {
+        var company = externalProfileMesssageService.getCompanyByProfileId(query.companyId());
+        var developer = externalProfileMesssageService.getDeveloperByProfileId(query.developerId());
+        if (company.isEmpty() || developer.isEmpty()){
+            return Optional.empty();
+        }
+        var chat = chatRepository.findByCompanyAndDeveloper(company.get(), developer.get());
+        return chat;
     }
 }
