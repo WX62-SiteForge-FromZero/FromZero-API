@@ -7,7 +7,7 @@ public record PaymentResource(
         String developerId,
         Long projectId,
         String amount,
-        PaymentStatus status
+        String status
 
 ){
 
