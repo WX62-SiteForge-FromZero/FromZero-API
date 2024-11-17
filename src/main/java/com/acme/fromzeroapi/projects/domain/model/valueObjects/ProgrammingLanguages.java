@@ -4,5 +4,15 @@ public enum ProgrammingLanguages {
     Javascript,
     Typescript,
     HTML,
-    CSS
+    CSS,
+    Python,
+    PHP,
+    Java,
+    C_Sharp,
+    C_PLUS_PLUS,
+    C,
+    Kotlin,
+    Swift,
+    Dart,
+    Ruby
 }

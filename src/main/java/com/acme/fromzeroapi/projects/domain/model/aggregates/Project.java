@@ -52,6 +52,7 @@ public class Project extends AuditableAbstractAggregateRoot<Project> {
             joinColumns = @JoinColumn(name = "project_id")
     )
     @Enumerated(EnumType.STRING)
+    @Column(name = "frameworks", nullable = false)
     private Set<Frameworks> frameworks = new HashSet<>();
 
     @ElementCollection(targetClass = ProgrammingLanguages.class, fetch = FetchType.EAGER)
