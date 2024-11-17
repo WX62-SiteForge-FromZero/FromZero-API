@@ -71,7 +71,7 @@ public class ChatController {
 
     @GetMapping("/chats/{developerId}/{companyId}")
     public ResponseEntity<ChatResource> getChatsByDeveloperIdAndCompanyId(@PathVariable String companyId, @PathVariable String developerId) {
-        var chats = chatQueryService.handle(new GetChatByCompanyIdAndDeveloperIdQuery(developerId, companyId));
+        var chats = chatQueryService.handle(new GetChatByCompanyIdAndDeveloperIdQuery(companyId,developerId));
         if (chats.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
